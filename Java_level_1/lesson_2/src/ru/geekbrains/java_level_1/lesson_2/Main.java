@@ -92,23 +92,47 @@ public class Main {
 
     // Задание 7
     public static void moveNumbers (int[] massive, int delta) {
-        if (delta > 0) {
-            for (int i = 0; i < massive.length; i++) {
-                if ((i + delta) > (massive.length - 1)) {
-                    massive[i] = 0;
-                    continue;
+
+        boolean flag = delta > 0;
+        if (!flag) delta = -delta;
+
+        for (int i = 0; i < delta; i++) {
+            int tmp = flag ? massive[massive.length - 1] : massive[0];
+            if (flag) {
+                for (int j = massive.length - 1; j > 0; j--) {
+                    massive[j] = massive [j - 1];
                 }
-                massive[i] = massive[i + delta];
+                massive[0] = tmp;
+            }
+            else {
+                for (int j = 0; j < massive.length - 1; j++) {
+                    massive[j] = massive[j + 1];
+                }
+                massive[massive.length - 1] = tmp;
             }
         }
-        else if (delta < 0) {
-            for (int i = massive.length - 1; i >= 0; i--) {
-                if ((i + delta) < 0) {
-                    massive[i] = 0;
-                    continue;
-                }
-                massive[i] = massive[i + delta];
-            }
-        }
+
+
+
+
+//        Это старое решение с затиранием элементов нулями.
+//          if (delta > 0) {
+//            for (int i = 0; i < massive.length; i++) {
+//                if ((i + delta) > (massive.length - 1)) {
+//                    massive[i] = 0;
+//                    continue;
+//                }
+//                massive[i] = massive[i + delta];
+//            }
+//        }
+//        else if (delta < 0) {
+//            for (int i = massive.length - 1; i >= 0; i--) {
+//                if ((i + delta) < 0) {
+//                    massive[i] = 0;
+//                    continue;
+//                }
+//                massive[i] = massive[i + delta];
+//            }
+//        }
     }
 }
