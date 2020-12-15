@@ -328,7 +328,7 @@ public class Main {
                 else emptyDotCount++;
             }
             // Возвращаем координату строки, в которой нашлась искомая последовательность
-            if ((playerDotCount > difficulty || aiDotCount > difficulty) && emptyDotCount > 0) return i;
+            if ((playerDotCount > difficulty || aiDotCount > 1) && emptyDotCount > 0) return i;
             playerDotCount = aiDotCount = emptyDotCount = 0;
         }
         return -1;
@@ -346,7 +346,7 @@ public class Main {
                 else emptyDotCount++;
             }
             // Возвращаем координату столбца, в котором нашлась искомая последовательность
-            if ((playerDotCount > difficulty || aiDotCount > difficulty) && emptyDotCount > 0) return i;
+            if ((playerDotCount > difficulty || aiDotCount > 1) && emptyDotCount > 0) return i;
             playerDotCount = aiDotCount = emptyDotCount = 0;
         }
         return -1;
