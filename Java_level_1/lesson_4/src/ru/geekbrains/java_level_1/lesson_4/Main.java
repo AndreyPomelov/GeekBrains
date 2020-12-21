@@ -153,10 +153,14 @@ public class Main {
     static char dotAI = 'O';
     static char empty = '.';
     static int x, y;
-    static int smartMoveStatus; // переменная, используемая в логике хода AI
     static int difficulty = 2; // переменная, регулирующая сложность игры
     // Регулирует реакцию AI на выстраиваемые последовательности символов.
+    // Значение 2 - обычная сложность. 1 - AI реагирует раньше, но появляется
+    // побочное явление в виде лишних ходов. Здесь можно ещё подумать и поработать.
     // Добавлена ради эксперимента, менять не рекомендуется. 2 - оптимальное значение.
+    static int targetX; // Эти три переменные используются в логике хода AI
+    static int targetY;
+    static boolean isMoveDone;
 
     public static void main(String[] args) {
 
@@ -230,59 +234,21 @@ public class Main {
 
     // метод, проверяющий победил ли игрок или компьютер
     static boolean isWin(char dot) {
-        int dotCount = 0;
-        // проверяем вертикали и горизонтали
         for (int i = 0; i < fieldSizeY; i++) {
             for (int j = 0; j < fieldSizeX; j++) {
-                if (field[j][i] == dot) dotCount++;
-                else dotCount = 0;
-                if (dotCount == 4) return true;
+                if (isUpDiagValid(j, i)) { // Смотрим, целесообразно ли проверять диагональ
+                    if (checkUpDiag(j, i, dot)) return true; // Если да, проверяем диагональ
+                } // Далее - аналогично со второй диагональю, горизонталью и вертикалью
+                if (isDownDiagValid(j, i)) {
+                    if (checkDownDiag(j, i, dot)) return true;
+                }
+                if (isHorizValid(j)) {
+                    if (checkHoriz(j, i, dot)) return true;
+                }
+                if (isVertValid(i)) {
+                    if (checkVert(j, i, dot)) return true;
+                }
             }
-            dotCount = 0;
-        }
-        for (int i = 0; i < fieldSizeX; i++) {
-            for (int j = 0; j < fieldSizeY; j++) {
-                if (field[i][j] == dot) dotCount++;
-                else dotCount = 0;
-                if (dotCount == 4) return true;
-            }
-            dotCount = 0;
-        }
-        // проверяем все диагонали, в которых по условию возможна победа
-        for (int i = 0, j = 0; i < fieldSizeX; i++, j++) {
-            if (field[i][j] == dot) dotCount++;
-            else dotCount = 0;
-            if (dotCount == 4) return true;
-        }
-        dotCount = 0;
-        for (int i = (fieldSizeY - 1), j = 0; j < fieldSizeX; i--, j++) {
-            if (field[i][j] == dot) dotCount++;
-            else dotCount = 0;
-            if (dotCount == 4) return true;
-        }
-        dotCount = 0;
-        for (int i = 0, j = 1; i < fieldSizeX - 1; i++, j++) {
-            if (field[i][j] == dot) dotCount++;
-            else dotCount = 0;
-            if (dotCount == 4) return true;
-        }
-        dotCount = 0;
-        for (int i = 1, j = 0; i < fieldSizeX; i++, j++) {
-            if (field[i][j] == dot) dotCount++;
-            else dotCount = 0;
-            if (dotCount == 4) return true;
-        }
-        dotCount = 0;
-        for (int i = fieldSizeX - 2, j = 0; i >= 0; i--, j++) {
-            if (field[i][j] == dot) dotCount++;
-            else dotCount = 0;
-            if (dotCount == 4) return true;
-        }
-        dotCount = 0;
-        for (int i = fieldSizeX - 1, j = 1; i > 0; i--, j++) {
-            if (field[i][j] == dot) dotCount++;
-            else dotCount = 0;
-            if (dotCount == 4) return true;
         }
         return false;
     }
@@ -299,13 +265,24 @@ public class Main {
 
     // метод хода компьютера
     static void aiTurn() {
+        isMoveDone = false; // Обозначаем, что на данный момент ход ещё не сделан
         System.out.println("Ходит компьютер");
-        smartMoveStatus = analyzeX(); // Анализируем строки
-        if (smartMoveStatus != -1) smartMoveX(); // Если анализ успешен, реализуем логику хода по строкам
-        if (smartMoveStatus != -2) smartMoveStatus = analyzeY(); // Если ход ещё не сделан, анализируем столбцы
-        if (smartMoveStatus >= 0) smartMoveY(); // Если анализ успешен, реализуем логику хода по столбцам
-        // Если ни один из проведённых анализов не дал результата, делаем обычный рандомный ход
-        if (smartMoveStatus != -2) {
+        // Следующий цикл - попытка сыграть на победу или блокировку игрока
+        for (int i = 0; i < fieldSizeY; i++) {
+            for (int j = 0; j < fieldSizeX; j++) {
+                aiTurnUpDiag(j, i); // Пытаемся сходить по первой диагонали
+                if (isMoveDone) break; // Если ход сделан, выходим из цикла
+                aiTurnDownDiag(j, i); // Далее аналогично по второй диагонали, горизонтали и вертикали
+                if (isMoveDone) break;
+                aiTurnHoriz(j, i);
+                if (isMoveDone) break;
+                aiTurnVert(j, i);
+                if (isMoveDone) break;
+            }
+            if (isMoveDone) break;
+        }
+        // Если не удалось сыграть на победу или блокировку, делаем обычный рандомный ход
+        if (!isMoveDone) {
             do {
                 x = random.nextInt(fieldSizeX);
                 y = random.nextInt(fieldSizeY);
@@ -313,88 +290,151 @@ public class Main {
             field[x][y] = dotAI;
             fieldDraw();
         }
-        smartMoveStatus = -1;
     }
 
-    // Метод, анализирующий строки поля
-    static int analyzeX() {
-        int playerDotCount = 0;
-        int aiDotCount = 0;
-        int emptyDotCount = 0;
-        for (int i = 0; i < fieldSizeY; i++) {
-            for (int j = 0; j < fieldSizeX; j++) {
-                if (field[j][i] == dotPlayer) playerDotCount++;
-                else if (field[j][i] == dotAI) aiDotCount++;
-                else emptyDotCount++;
-            }
-            // Возвращаем координату строки, в которой нашлась искомая последовательность
-            if ((playerDotCount > difficulty || aiDotCount > 1) && emptyDotCount > 0) return i;
-            playerDotCount = aiDotCount = emptyDotCount = 0;
-        }
-        return -1;
+    // Метод, проверяющий целесообразность проверки по диагонали вверх
+    static boolean isUpDiagValid(int x, int y) {
+        return (x < fieldSizeX - 3 && y > fieldSizeY - 3);
     }
 
-    // Метод, анализирующий столбцы поля
-    static int analyzeY() {
-        int playerDotCount = 0;
-        int aiDotCount = 0;
-        int emptyDotCount = 0;
-        for (int i = 0; i < fieldSizeY; i++) {
-            for (int j = 0; j < fieldSizeX; j++) {
-                if (field[i][j] == dotPlayer) playerDotCount++;
-                else if (field[i][j] == dotAI) aiDotCount++;
-                else emptyDotCount++;
-            }
-            // Возвращаем координату столбца, в котором нашлась искомая последовательность
-            if ((playerDotCount > difficulty || aiDotCount > 1) && emptyDotCount > 0) return i;
-            playerDotCount = aiDotCount = emptyDotCount = 0;
+    // Метод, проверяющий диагональ вверх
+    static boolean checkUpDiag(int x, int y, char dot) {
+        int count = 0;
+        for (int i = 0; i < 4; i++) {
+            if (field[x++][y--] == dot) count++;
         }
-        return -1;
+        return count == 4;
     }
 
-    // Метод логики хода AI по строкам
-    // Логика конечно примитивная, здесь можно ещё работать и работать.
-    // Но по крайней мере, это уже не просто "тупой рандом" =)
-    // Благодаря двум верхним методам анализа и двум нижним методам логики хода,
-    // в первую очередь AI пытается либо сделать такой ход, чтобы выиграть,
-    // либо заблокировать последовательность, которую выстраивает игрок.
-    // В цикле взяты две управляющие переменные, для того чтобы AI в первую
-    // очередь ходил ближе к середине строки или столбца, т.к. если, например,
-    // игрок строит свою последовательность с конца строки, то бессмысленно
-    // пытаться сделать блокирующий ход в начале строки. И наоборот.
-    // Не стал доделывать логику блокировки по диагоналям, т.к. принцип один и тот же.
-    static void smartMoveX() {
-        for (int i = fieldSizeX / 2, j = fieldSizeX / 2; i >=0; i--, j++) {
-            if (field[i][smartMoveStatus] == empty) {
-                field[i][smartMoveStatus] = dotAI;
-                fieldDraw();
-                smartMoveStatus = -2;
-                break;
+    // Метод, проверяющий целесообразность проверки по диагонали вниз
+    static boolean isDownDiagValid(int x, int y) {
+        return (x < fieldSizeX - 3 && y < fieldSizeY - 3);
+    }
+
+    // Метод, проверяющий диагональ вниз
+    static boolean checkDownDiag(int x, int y, char dot) {
+        int count = 0;
+        for (int i = 0; i < 4; i++) {
+            if (field[x++][y++] == dot) count++;
+        }
+        return count == 4;
+    }
+
+    // Метод, проверяющий целесообразность проверки по горизонтали
+    static boolean isHorizValid(int x) {
+        return (x < fieldSizeX - 3);
+    }
+
+    // Метод, проверяющий горизонталь
+    static boolean checkHoriz(int x, int y, char dot) {
+        int count = 0;
+        for (int i = 0; i < 4; i++) {
+            if (field[x++][y] == dot) count++;
+        }
+        return count == 4;
+    }
+
+    // Метод, проверяющий целесообразность проверки по вертикали
+    static boolean isVertValid(int y) {
+        return (y < fieldSizeX - 3);
+    }
+
+    // Метод, проверяющий вертикаль
+    static boolean checkVert(int x, int y, char dot) {
+        int count = 0;
+        for (int i = 0; i < 4; i++) {
+            if (field[x][y++] == dot) count++;
+        }
+        return count == 4;
+    }
+
+    // Попытка AI сходить по первой диагонали
+    static void aiTurnUpDiag(int x, int y) {
+        if (isUpDiagValid(x, y)) {
+            int aiDotCount = 0;
+            int playerDotCount = 0;
+            int emptyDotCount = 0;
+            for (int i = 0; i < 4; i++) {
+                if (field[x][y] == dotPlayer) playerDotCount++;
+                if (field[x][y] == dotAI) aiDotCount++;
+                if (field[x][y] == empty) {
+                    emptyDotCount++;
+                    targetX = x;
+                    targetY = y;
+                }
+                x++;
+                y--;
             }
-            if (field[j][smartMoveStatus] == empty) {
-                field[j][smartMoveStatus] = dotAI;
-                fieldDraw();
-                smartMoveStatus = -2;
-                break;
-            }
+            if ((playerDotCount > difficulty || aiDotCount > difficulty) && emptyDotCount > 0) move();
         }
     }
 
-    // Метод логики хода AI по столбцам
-    static void smartMoveY() {
-        for (int i = fieldSizeY / 2, j = fieldSizeY / 2; i >=0; i--, j++) {
-            if (field[smartMoveStatus][i] == empty) {
-                field[smartMoveStatus][i] = dotAI;
-                fieldDraw();
-                smartMoveStatus = -2;
-                break;
+    // Попытка AI сходить по второй диагонали
+    static void aiTurnDownDiag(int x, int y) {
+        if (isDownDiagValid(x, y)) {
+            int aiDotCount = 0;
+            int playerDotCount = 0;
+            int emptyDotCount = 0;
+            for (int i = 0; i < 4; i++) {
+                if (field[x][y] == dotPlayer) playerDotCount++;
+                if (field[x][y] == dotAI) aiDotCount++;
+                if (field[x][y] == empty) {
+                    emptyDotCount++;
+                    targetX = x;
+                    targetY = y;
+                }
+                x++;
+                y++;
             }
-            if (field[smartMoveStatus][j] == empty) {
-                field[smartMoveStatus][j] = dotAI;
-                fieldDraw();
-                smartMoveStatus = -2;
-                break;
-            }
+            if ((playerDotCount > difficulty || aiDotCount > difficulty) && emptyDotCount > 0) move();
         }
     }
+
+    // Попытка AI сходить по горизонтали
+    static void aiTurnHoriz(int x, int y) {
+        if (isHorizValid(x)) {
+            int aiDotCount = 0;
+            int playerDotCount = 0;
+            int emptyDotCount = 0;
+            for (int i = 0; i < 4; i++) {
+                if (field[x][y] == dotPlayer) playerDotCount++;
+                if (field[x][y] == dotAI) aiDotCount++;
+                if (field[x][y] == empty) {
+                    emptyDotCount++;
+                    targetX = x;
+                    targetY = y;
+                }
+                x++;
+            }
+            if ((playerDotCount > difficulty || aiDotCount > difficulty) && emptyDotCount > 0) move();
+        }
+    }
+
+    // Попытка AI сходить по вертикали
+    static void aiTurnVert(int x, int y) {
+        if (isVertValid(y)) {
+            int aiDotCount = 0;
+            int playerDotCount = 0;
+            int emptyDotCount = 0;
+            for (int i = 0; i < 4; i++) {
+                if (field[x][y] == dotPlayer) playerDotCount++;
+                if (field[x][y] == dotAI) aiDotCount++;
+                if (field[x][y] == empty) {
+                    emptyDotCount++;
+                    targetX = x;
+                    targetY = y;
+                }
+                y++;
+            }
+            if ((playerDotCount > difficulty || aiDotCount > difficulty) && emptyDotCount > 0) move();
+        }
+    }
+
+    // Метод, проставляющий символ AI в выбранную ячейку
+    static void move() {
+        field[targetX][targetY] = dotAI;
+        fieldDraw();
+        isMoveDone = true;
+    }
+
 }
