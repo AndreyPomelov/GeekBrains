@@ -11,8 +11,8 @@ public class GameWindow extends JFrame {
     private static final int WINDOW_POS_Y = 300;
     private static final int WINDOW_HEIGHT = 555;
     private static final int WINDOW_WIDTH = 508;
-    private static StartNewGameWindow startNewGameWindow;
-    private static Map field;
+    StartNewGameWindow startNewGameWindow;
+    Map field;
 
     public GameWindow() {
 
@@ -28,9 +28,9 @@ public class GameWindow extends JFrame {
         bottomPanel.add(btnExit);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        startNewGameWindow = new StartNewGameWindow(this);
         field = new Map();
         add(field, BorderLayout.CENTER);
+        startNewGameWindow = new StartNewGameWindow(this, field);
 
         btnStartNewGame.addActionListener(new ActionListener() {
             @Override
