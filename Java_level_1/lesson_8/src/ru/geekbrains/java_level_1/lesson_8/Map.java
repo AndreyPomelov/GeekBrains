@@ -19,11 +19,12 @@ public class Map extends JPanel {
     private int cellHeight;
     private int cellWidth;
 
-    private int currentCellClickX = -1;
-    private int currentCellClickY = -1;
-    private boolean isClicked;
+    private int currentCellClickX = 0;
+    private int currentCellClickY = 0;
 
     boolean isInitialized = false;
+    boolean gameCondition = true;
+    boolean isPressed = false;
 
     char dotPlayer = 'X';
     char dotAI = 'O';
@@ -37,7 +38,9 @@ public class Map extends JPanel {
                 currentCellClickX = e.getX() / cellWidth;
                 currentCellClickY = e.getY() / cellHeight;
                 System.out.println("X " + currentCellClickX + " Y " + currentCellClickY);
-                isClicked = true;
+                if (isCoordCorrect(currentCellClickX, currentCellClickY)) {
+                    if (gameCondition) playerTurn();
+                }
             }
         });
     }
@@ -46,6 +49,7 @@ public class Map extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         render(g);
+        drawX(g);
     }
 
     void startNewGame (GameSettings gameSettings) {
@@ -58,20 +62,120 @@ public class Map extends JPanel {
         isInitialized = true;
         repaint();
         fieldInit(fieldSizeX, fieldSizeY);
-        game();
     }
 
     void game() {
+        playerTurn();
 
     }
 
     // метод хода игрока
     void playerTurn() {
-        do {
-
-        } while (!isCoordCorrect(currentCellClickX, currentCellClickY));
         field[currentCellClickX][currentCellClickY] = dotPlayer;
+        System.out.println("Метка поставлена " + currentCellClickX + " " + currentCellClickY);
         repaint();
+        System.out.println("Игрок сходил успешно");
+        gameCondition = !gameCondition;
+        if (isWin(dotPlayer)) {
+            System.out.println("PLAYER WIN");
+        }
+    }
+
+    // метод, проверяющий победил ли игрок или компьютер
+    boolean isWin(char dot) {
+        for (int i = 0; i < fieldSizeY; i++) {
+            for (int j = 0; j < fieldSizeX; j++) {
+                if (isUpDiagValid(j, i)) { // Смотрим, целесообразно ли проверять диагональ
+                    if (checkUpDiag(j, i, dot)) return true; // Если да, проверяем диагональ
+                } // Далее - аналогично со второй диагональю, горизонталью и вертикалью
+                if (isDownDiagValid(j, i)) {
+                    if (checkDownDiag(j, i, dot)) return true;
+                }
+                if (isHorizValid(j)) {
+                    if (checkHoriz(j, i, dot)) return true;
+                }
+                if (isVertValid(i)) {
+                    if (checkVert(j, i, dot)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Метод, проверяющий целесообразность проверки по диагонали вверх
+    boolean isUpDiagValid(int x, int y) {
+        return (x <= fieldSizeX - winLength && y >= winLength - 1);
+    }
+
+    // Метод, проверяющий диагональ вверх
+    boolean checkUpDiag(int x, int y, char dot) {
+        int count = 0;
+        for (int i = 0; i < winLength; i++) {
+            if (field[x++][y--] == dot) count++;
+        }
+        return count == winLength;
+    }
+
+    // Метод, проверяющий целесообразность проверки по диагонали вниз
+    boolean isDownDiagValid(int x, int y) {
+        return (x <= fieldSizeX - winLength && y <= fieldSizeY - winLength);
+    }
+
+    // Метод, проверяющий диагональ вниз
+    boolean checkDownDiag(int x, int y, char dot) {
+        int count = 0;
+        for (int i = 0; i < winLength; i++) {
+            if (field[x++][y++] == dot) count++;
+        }
+        return count == winLength;
+    }
+
+    // Метод, проверяющий целесообразность проверки по горизонтали
+    boolean isHorizValid(int x) {
+        return (x <= fieldSizeX - winLength);
+    }
+
+    // Метод, проверяющий горизонталь
+    boolean checkHoriz(int x, int y, char dot) {
+        int count = 0;
+        for (int i = 0; i < winLength; i++) {
+            if (field[x++][y] == dot) count++;
+        }
+        return count == winLength;
+    }
+
+    // Метод, проверяющий целесообразность проверки по вертикали
+    boolean isVertValid(int y) {
+        return (y <= fieldSizeX - winLength);
+    }
+
+    // Метод, проверяющий вертикаль
+    boolean checkVert(int x, int y, char dot) {
+        int count = 0;
+        for (int i = 0; i < winLength; i++) {
+            if (field[x][y++] == dot) count++;
+        }
+        return count == winLength;
+    }
+
+
+
+    void drawX(Graphics g) {
+        for (int i = 0; i < fieldSizeY; i++) {
+            for (int j = 0; j < fieldSizeX; j++) {
+                if (field[j][i] == dotPlayer){
+                    g.drawLine(cellWidth * j + 10, cellHeight * i + 10,
+                            cellWidth * (j + 1) - 10, cellHeight * (i + 1) - 10);
+                    g.drawLine(cellWidth * (j + 1) - 10, cellHeight * i + 10,
+                            cellWidth * j + 10, cellHeight * (i + 1) - 10);
+                }
+                if (field[j][i] == dotAI) {
+                    g.drawOval(cellWidth * j + 10, cellHeight * i + 10,
+                            cellWidth - 20, cellHeight - 20);
+                }
+            }
+        }
+
     }
 
     // метод, проверяющий корректность координат
