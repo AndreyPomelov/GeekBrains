@@ -16,19 +16,19 @@ public class Map extends JPanel {
     private int cellHeight;
     private int cellWidth;
 
-    private int currentCellClickX = 0;
+    private int currentCellClickX = 0; // переменные, содержащие координаты ячейки, куда кликнул игрок
     private int currentCellClickY = 0;
 
     private boolean isInitialized = false;
-    private boolean gameCondition = true;
-    private boolean isMoveDone;
-    private boolean gameOver = false;
+    private boolean gameCondition = true; // переменная, определяющая, кто ходит
+    private boolean isMoveDone; // переменная, использующаяся в логике хода компа
+    private boolean gameOver = false; // переменная, показывающая, произошло ли какое-либо событие, завершающее игру
 
     private char dotPlayer = 'X';
     private char dotAI = 'O';
     private char empty = ' ';
 
-    private int targetX;
+    private int targetX; // переменные, использующиеся в логике хода компа
     private int targetY;
 
     private Random random = new Random();
@@ -47,7 +47,7 @@ public class Map extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 currentCellClickX = e.getX() / cellWidth;
                 currentCellClickY = e.getY() / cellHeight;
-                if (isCoordCorrect(currentCellClickX, currentCellClickY)) playerTurn();
+                if (isCoordCorrect(currentCellClickX, currentCellClickY)) playerTurn(); // ходим только если клик сделан в корректную ячейку
             }
         });
     }
@@ -71,30 +71,30 @@ public class Map extends JPanel {
         isInitialized = true;
         repaint();
         fieldInit(fieldSizeX, fieldSizeY);
-        gameCondition = true;
+        gameCondition = true; // при начале новой игры очередь ходить всегда у первого игрока
     }
 
     // метод хода игрока
     private void playerTurn() {
         char currentDot;
-        if (gameCondition) currentDot = dotPlayer;
+        if (gameCondition) currentDot = dotPlayer; // определяем, кто именно сейчас ходит, и назначаем соответственно крестик или нолик
         else currentDot = dotAI;
         field[currentCellClickX][currentCellClickY] = currentDot;
         repaint();
         if (gameCondition && gameSettings.getGameMode() == 1) gameWindow.textField.setText(strPlayer2);
         else gameWindow.textField.setText(strPlayer1);
-        gameCondition = !gameCondition;
-        if (isWin(currentDot)) {
+        gameCondition = !gameCondition; // меняем очередность хода, в следующем вызове метода будет ходить другой игрок
+        if (isWin(currentDot)) { // после хода проверяем победу
             gameOver = true;
             if (currentDot == dotPlayer) new WinWindow(1, this, gameWindow);
             if (currentDot == dotAI && gameSettings.getGameMode() == 1)
                 new WinWindow(2, this, gameWindow);
         }
-        if (!gameOver && isFieldFull()) {
+        if (!gameOver && isFieldFull()) { // если никто не победил, проверяем, не заполнено ли поле
             new WinWindow(3, this, gameWindow);
         }
-        if (gameSettings.getGameMode() == 1) return;
-        else {
+        if (gameSettings.getGameMode() == 1) return; // если играем вдвоём, завершаем выполнение метода
+        else { // если с компом, то ходит комп
             if (!gameOver) aiTurn();
             gameCondition = !gameCondition;
         }
@@ -313,6 +313,7 @@ public class Map extends JPanel {
         return count == winLength;
     }
 
+    // метод, отрисовывающий крестики и нолики
     private void drawX(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setStroke(new BasicStroke(3));
@@ -347,6 +348,7 @@ public class Map extends JPanel {
         }
     }
 
+    // метод, отрисовывающий сетку
     private void render (Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setStroke(new BasicStroke(3));

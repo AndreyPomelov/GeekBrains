@@ -1,8 +1,8 @@
 package ru.geekbrains.java_level_1.lesson_8;
 
-public class GameSettings {
+public class GameSettings { // Класс, содержащий все настройки игры
 
-    private int gameMode;
+    private int gameMode; // Против компьютера или другого игрока
     private int fieldSize;
     private int winLength;
 

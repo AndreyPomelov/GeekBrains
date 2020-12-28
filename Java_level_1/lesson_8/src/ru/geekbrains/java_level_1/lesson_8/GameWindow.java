@@ -30,7 +30,7 @@ public class GameWindow extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
         field = new Map(this);
         add(field, BorderLayout.CENTER);
-        textField = new TextField();
+        textField = new TextField(); // строка, которая будет отображать текущую информацию во время игры
         textField.setEditable(false);
         add(textField, BorderLayout.NORTH);
         textField.setText("   Игра Крестики-нолики. Для начала игры нажми кнопку Старт.");

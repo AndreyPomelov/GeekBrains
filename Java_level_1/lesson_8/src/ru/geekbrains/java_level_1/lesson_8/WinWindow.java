@@ -21,7 +21,7 @@ public class WinWindow extends JFrame {
         int posY = (int)gameWindowBounds.getCenterY() - WINDOW_HEIGHT / 2;
         setLocation(posX, posY);
         JLabel winLabel = new JLabel();
-        if (whoIsWin == 0) winLabel.setText("   Победил компьютер!");
+        if (whoIsWin == 0) winLabel.setText("   Победил компьютер!"); // здесь можно свитч-кейс
         if (whoIsWin == 1) winLabel.setText("   Победил игрок №1!");
         if (whoIsWin == 2) winLabel.setText("   Победил игрок №2!");
         if (whoIsWin == 3) winLabel.setText("   Ничья!");
@@ -33,9 +33,9 @@ public class WinWindow extends JFrame {
         buttonOK.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                gameWindow.setVisible(false);
-                new GameWindow();
+                setVisible(false); // закрываем текущее окно
+                gameWindow.setVisible(false); // закрываем основное окно игры
+                new GameWindow(); // открываем новое основное окно игры
             }
         });
     }
