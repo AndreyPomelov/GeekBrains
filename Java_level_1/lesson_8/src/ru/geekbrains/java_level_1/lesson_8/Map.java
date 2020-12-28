@@ -23,6 +23,7 @@ public class Map extends JPanel {
     private boolean isInitialized = false;
     private boolean gameCondition = true;
     private boolean isMoveDone;
+    private boolean gameOver = false;
 
     private char dotPlayer = 'X';
     private char dotAI = 'O';
@@ -34,8 +35,13 @@ public class Map extends JPanel {
     private Random random = new Random();
 
     private GameSettings gameSettings;
+    private GameWindow gameWindow;
 
-    Map() {
+    private String strPlayer1 = "   Ходит первый игрок. Выбери свободную ячейку.";
+    private String strPlayer2 = "   Ходит второй игрок. Выбери свободную ячейку.";
+
+    Map(GameWindow gameWindow) {
+        this.gameWindow = gameWindow;
         setBackground(Color.ORANGE);
         addMouseListener(new MouseAdapter() {
             @Override
@@ -43,7 +49,9 @@ public class Map extends JPanel {
                 currentCellClickX = e.getX() / cellWidth;
                 currentCellClickY = e.getY() / cellHeight;
                 if (isCoordCorrect(currentCellClickX, currentCellClickY)) {
-                    if (gameCondition) playerTurn();
+                    //if (gameCondition)
+                    playerTurn();
+                    //if (!gameCondition) playerTurn(dotAI);
                 }
             }
         });
@@ -58,6 +66,7 @@ public class Map extends JPanel {
 
     void startNewGame (GameSettings gameSettings) {
         this.gameSettings = gameSettings;
+        gameWindow.textField.setText(strPlayer1);
         fieldSizeX = gameSettings.getFieldSize();
         fieldSizeY = gameSettings.getFieldSize();
         cellWidth = getWidth() / fieldSizeX;
@@ -71,17 +80,24 @@ public class Map extends JPanel {
 
     // метод хода игрока
     private void playerTurn() {
-        field[currentCellClickX][currentCellClickY] = dotPlayer;
+        char currentDot;
+        if (gameCondition) currentDot = dotPlayer;
+        else currentDot = dotAI;
+        field[currentCellClickX][currentCellClickY] = currentDot;
         repaint();
         gameCondition = !gameCondition;
-        if (isWin(dotPlayer)) {
-            new WinWindow(1, this);
+        if (isWin(currentDot)) {
+            gameOver = true;
+            if (currentDot == dotPlayer) new WinWindow(1, this, gameWindow);
+            if (currentDot == dotAI && gameSettings.getGameMode() == 1)
+                new WinWindow(2, this, gameWindow);
         }
-        if (isFieldFull()) {
-            System.out.println("Ничья");
+        if (!gameOver && isFieldFull()) {
+            new WinWindow(3, this, gameWindow);
         }
-        if (gameSettings.getGameMode() == 0) {
-            aiTurn();
+        if (gameSettings.getGameMode() == 1) return;
+        else {
+            if (!gameOver) aiTurn();
             gameCondition = !gameCondition;
         }
     }
@@ -89,7 +105,6 @@ public class Map extends JPanel {
     // метод хода компьютера
     private void aiTurn() {
         isMoveDone = false; // Обозначаем, что на данный момент ход ещё не сделан
-        System.out.println("Ходит компьютер");
         // Следующий цикл - попытка сыграть на победу или блокировку игрока
         for (int i = 0; i < fieldSizeY; i++) {
             for (int j = 0; j < fieldSizeX; j++) {
@@ -111,14 +126,14 @@ public class Map extends JPanel {
                 targetY = random.nextInt(fieldSizeY);
             } while (!isCoordCorrect(targetX, targetY));
             move();
-            System.out.println("Сработал рандом");
         }
         repaint();
         if (isWin(dotAI)) {
-            System.out.println("Выиграл компьютер");
+            gameOver = true;
+            new WinWindow(0, this, gameWindow);
         }
         if (isFieldFull()) {
-            System.out.println("Ничья");
+            new WinWindow(3, this, gameWindow);
         }
     }
 
@@ -239,6 +254,8 @@ public class Map extends JPanel {
                 if (field[j][i] == empty) return false;
             }
         }
+        gameOver = true;
+        repaint();
         return true;
     }
 

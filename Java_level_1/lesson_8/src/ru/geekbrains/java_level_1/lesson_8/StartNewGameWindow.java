@@ -29,6 +29,7 @@ public class StartNewGameWindow extends JFrame {
         field = _field;
         this.gameWindow = gameWindow;
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        setResizable(false);
         Rectangle gameWindowBounds = gameWindow.getBounds();
         int posX = (int)gameWindowBounds.getCenterX() - WINDOW_WIDTH / 2;
         int posY = (int)gameWindowBounds.getCenterY() - WINDOW_HEIGHT / 2;
@@ -81,7 +82,7 @@ public class StartNewGameWindow extends JFrame {
         add(new JLabel("Выберите размер выигрышной комбинации:"));
         final JLabel lblWinLength = new JLabel(STR_WIN_LEN + MIN_WIN_LEN);
         add(lblWinLength);
-        sliderWinLength = new JSlider(MIN_WIN_LEN, MAX_WIN_LEN, MIN_WIN_LEN);
+        sliderWinLength = new JSlider(MIN_WIN_LEN, MIN_WIN_LEN, MIN_WIN_LEN);
         add(sliderWinLength);
         sliderWinLength.addChangeListener(new ChangeListener() {
             @Override
