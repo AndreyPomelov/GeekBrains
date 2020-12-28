@@ -11,8 +11,8 @@ public class GameWindow extends JFrame {
     private static final int WINDOW_POS_Y = 300;
     private static final int WINDOW_HEIGHT = 580;
     private static final int WINDOW_WIDTH = 508;
-    StartNewGameWindow startNewGameWindow;
-    Map field;
+    private StartNewGameWindow startNewGameWindow;
+    private Map field;
     TextField textField;
 
     public GameWindow() {

@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Random;
 
 public class Map extends JPanel {
@@ -48,11 +47,7 @@ public class Map extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 currentCellClickX = e.getX() / cellWidth;
                 currentCellClickY = e.getY() / cellHeight;
-                if (isCoordCorrect(currentCellClickX, currentCellClickY)) {
-                    //if (gameCondition)
-                    playerTurn();
-                    //if (!gameCondition) playerTurn(dotAI);
-                }
+                if (isCoordCorrect(currentCellClickX, currentCellClickY)) playerTurn();
             }
         });
     }
@@ -76,6 +71,7 @@ public class Map extends JPanel {
         isInitialized = true;
         repaint();
         fieldInit(fieldSizeX, fieldSizeY);
+        gameCondition = true;
     }
 
     // метод хода игрока
@@ -85,6 +81,8 @@ public class Map extends JPanel {
         else currentDot = dotAI;
         field[currentCellClickX][currentCellClickY] = currentDot;
         repaint();
+        if (gameCondition && gameSettings.getGameMode() == 1) gameWindow.textField.setText(strPlayer2);
+        else gameWindow.textField.setText(strPlayer1);
         gameCondition = !gameCondition;
         if (isWin(currentDot)) {
             gameOver = true;
