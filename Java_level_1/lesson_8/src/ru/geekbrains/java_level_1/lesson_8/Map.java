@@ -5,11 +5,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Random;
 
 public class Map extends JPanel {
-
-    public static final int MODE_VS_AI = 0;
-    public static final int MODE_VS_HUMAN = 1;
 
     private char[][] field;
     private int fieldSizeX;
@@ -22,13 +20,20 @@ public class Map extends JPanel {
     private int currentCellClickX = 0;
     private int currentCellClickY = 0;
 
-    boolean isInitialized = false;
-    boolean gameCondition = true;
-    boolean isPressed = false;
+    private boolean isInitialized = false;
+    private boolean gameCondition = true;
+    private boolean isMoveDone;
 
-    char dotPlayer = 'X';
-    char dotAI = 'O';
-    char empty = ' ';
+    private char dotPlayer = 'X';
+    private char dotAI = 'O';
+    private char empty = ' ';
+
+    private int targetX;
+    private int targetY;
+
+    private Random random = new Random();
+
+    private GameSettings gameSettings;
 
     Map() {
         setBackground(Color.ORANGE);
@@ -37,7 +42,6 @@ public class Map extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 currentCellClickX = e.getX() / cellWidth;
                 currentCellClickY = e.getY() / cellHeight;
-                System.out.println("X " + currentCellClickX + " Y " + currentCellClickY);
                 if (isCoordCorrect(currentCellClickX, currentCellClickY)) {
                     if (gameCondition) playerTurn();
                 }
@@ -53,6 +57,7 @@ public class Map extends JPanel {
     }
 
     void startNewGame (GameSettings gameSettings) {
+        this.gameSettings = gameSettings;
         fieldSizeX = gameSettings.getFieldSize();
         fieldSizeY = gameSettings.getFieldSize();
         cellWidth = getWidth() / fieldSizeX;
@@ -64,25 +69,150 @@ public class Map extends JPanel {
         fieldInit(fieldSizeX, fieldSizeY);
     }
 
-    void game() {
-        playerTurn();
-
-    }
-
     // метод хода игрока
-    void playerTurn() {
+    private void playerTurn() {
         field[currentCellClickX][currentCellClickY] = dotPlayer;
-        System.out.println("Метка поставлена " + currentCellClickX + " " + currentCellClickY);
         repaint();
-        System.out.println("Игрок сходил успешно");
         gameCondition = !gameCondition;
         if (isWin(dotPlayer)) {
-            System.out.println("PLAYER WIN");
+            new WinWindow(1, this);
+        }
+        if (isFieldFull()) {
+            System.out.println("Ничья");
+        }
+        if (gameSettings.getGameMode() == 0) {
+            aiTurn();
+            gameCondition = !gameCondition;
+        }
+    }
+
+    // метод хода компьютера
+    private void aiTurn() {
+        isMoveDone = false; // Обозначаем, что на данный момент ход ещё не сделан
+        System.out.println("Ходит компьютер");
+        // Следующий цикл - попытка сыграть на победу или блокировку игрока
+        for (int i = 0; i < fieldSizeY; i++) {
+            for (int j = 0; j < fieldSizeX; j++) {
+                aiTurnUpDiag(j, i); // Пытаемся сходить по первой диагонали
+                if (isMoveDone) break; // Если ход сделан, выходим из цикла
+                aiTurnDownDiag(j, i); // Далее аналогично по второй диагонали, горизонтали и вертикали
+                if (isMoveDone) break;
+                aiTurnHoriz(j, i);
+                if (isMoveDone) break;
+                aiTurnVert(j, i);
+                if (isMoveDone) break;
+            }
+            if (isMoveDone) break;
+        }
+        // Если не удалось сыграть на победу или блокировку, делаем обычный рандомный ход
+        if (!isMoveDone) {
+            do {
+                targetX = random.nextInt(fieldSizeX);
+                targetY = random.nextInt(fieldSizeY);
+            } while (!isCoordCorrect(targetX, targetY));
+            move();
+            System.out.println("Сработал рандом");
+        }
+        repaint();
+        if (isWin(dotAI)) {
+            System.out.println("Выиграл компьютер");
+        }
+        if (isFieldFull()) {
+            System.out.println("Ничья");
+        }
+    }
+
+    // Метод, проставляющий символ AI в выбранную ячейку
+    private void move() {
+        field[targetX][targetY] = dotAI;
+        repaint();
+        isMoveDone = true;
+    }
+
+    // Попытка AI сходить по первой диагонали
+    private void aiTurnUpDiag(int x, int y) {
+        if (isUpDiagValid(x, y)) {
+            int aiDotCount = 0;
+            int playerDotCount = 0;
+            int emptyDotCount = 0;
+            for (int i = 0; i < winLength; i++) {
+                if (field[x][y] == dotPlayer) playerDotCount++;
+                if (field[x][y] == dotAI) aiDotCount++;
+                if (field[x][y] == empty) {
+                    emptyDotCount++;
+                    targetX = x;
+                    targetY = y;
+                }
+                x++;
+                y--;
+            }
+            if ((playerDotCount > winLength - 2 || aiDotCount > winLength - 2) && emptyDotCount > 0) move();
+        }
+    }
+
+    // Попытка AI сходить по второй диагонали
+    private void aiTurnDownDiag(int x, int y) {
+        if (isDownDiagValid(x, y)) {
+            int aiDotCount = 0;
+            int playerDotCount = 0;
+            int emptyDotCount = 0;
+            for (int i = 0; i < winLength; i++) {
+                if (field[x][y] == dotPlayer) playerDotCount++;
+                if (field[x][y] == dotAI) aiDotCount++;
+                if (field[x][y] == empty) {
+                    emptyDotCount++;
+                    targetX = x;
+                    targetY = y;
+                }
+                x++;
+                y++;
+            }
+            if ((playerDotCount > winLength - 2 || aiDotCount > winLength - 2) && emptyDotCount > 0) move();
+        }
+    }
+
+    // Попытка AI сходить по горизонтали
+    private void aiTurnHoriz(int x, int y) {
+        if (isHorizValid(x)) {
+            int aiDotCount = 0;
+            int playerDotCount = 0;
+            int emptyDotCount = 0;
+            for (int i = 0; i < winLength; i++) {
+                if (field[x][y] == dotPlayer) playerDotCount++;
+                if (field[x][y] == dotAI) aiDotCount++;
+                if (field[x][y] == empty) {
+                    emptyDotCount++;
+                    targetX = x;
+                    targetY = y;
+                }
+                x++;
+            }
+            if ((playerDotCount > winLength - 2 || aiDotCount > winLength - 2) && emptyDotCount > 0) move();
+        }
+    }
+
+    // Попытка AI сходить по вертикали
+    private void aiTurnVert(int x, int y) {
+        if (isVertValid(y)) {
+            int aiDotCount = 0;
+            int playerDotCount = 0;
+            int emptyDotCount = 0;
+            for (int i = 0; i < winLength; i++) {
+                if (field[x][y] == dotPlayer) playerDotCount++;
+                if (field[x][y] == dotAI) aiDotCount++;
+                if (field[x][y] == empty) {
+                    emptyDotCount++;
+                    targetX = x;
+                    targetY = y;
+                }
+                y++;
+            }
+            if ((playerDotCount > winLength - 2 || aiDotCount > winLength - 2) && emptyDotCount > 0) move();
         }
     }
 
     // метод, проверяющий победил ли игрок или компьютер
-    boolean isWin(char dot) {
+    private boolean isWin(char dot) {
         for (int i = 0; i < fieldSizeY; i++) {
             for (int j = 0; j < fieldSizeX; j++) {
                 if (isUpDiagValid(j, i)) { // Смотрим, целесообразно ли проверять диагональ
@@ -102,13 +232,23 @@ public class Map extends JPanel {
         return false;
     }
 
+    // метод, проверяющий, заполнено ли поле
+    private boolean isFieldFull() {
+        for (int i = 0; i < fieldSizeY; i++) {
+            for (int j = 0; j < fieldSizeX; j++) {
+                if (field[j][i] == empty) return false;
+            }
+        }
+        return true;
+    }
+
     // Метод, проверяющий целесообразность проверки по диагонали вверх
-    boolean isUpDiagValid(int x, int y) {
+    private boolean isUpDiagValid(int x, int y) {
         return (x <= fieldSizeX - winLength && y >= winLength - 1);
     }
 
     // Метод, проверяющий диагональ вверх
-    boolean checkUpDiag(int x, int y, char dot) {
+    private boolean checkUpDiag(int x, int y, char dot) {
         int count = 0;
         for (int i = 0; i < winLength; i++) {
             if (field[x++][y--] == dot) count++;
@@ -117,12 +257,12 @@ public class Map extends JPanel {
     }
 
     // Метод, проверяющий целесообразность проверки по диагонали вниз
-    boolean isDownDiagValid(int x, int y) {
+    private boolean isDownDiagValid(int x, int y) {
         return (x <= fieldSizeX - winLength && y <= fieldSizeY - winLength);
     }
 
     // Метод, проверяющий диагональ вниз
-    boolean checkDownDiag(int x, int y, char dot) {
+    private boolean checkDownDiag(int x, int y, char dot) {
         int count = 0;
         for (int i = 0; i < winLength; i++) {
             if (field[x++][y++] == dot) count++;
@@ -131,12 +271,12 @@ public class Map extends JPanel {
     }
 
     // Метод, проверяющий целесообразность проверки по горизонтали
-    boolean isHorizValid(int x) {
+    private boolean isHorizValid(int x) {
         return (x <= fieldSizeX - winLength);
     }
 
     // Метод, проверяющий горизонталь
-    boolean checkHoriz(int x, int y, char dot) {
+    private boolean checkHoriz(int x, int y, char dot) {
         int count = 0;
         for (int i = 0; i < winLength; i++) {
             if (field[x++][y] == dot) count++;
@@ -145,12 +285,12 @@ public class Map extends JPanel {
     }
 
     // Метод, проверяющий целесообразность проверки по вертикали
-    boolean isVertValid(int y) {
+    private boolean isVertValid(int y) {
         return (y <= fieldSizeX - winLength);
     }
 
     // Метод, проверяющий вертикаль
-    boolean checkVert(int x, int y, char dot) {
+    private boolean checkVert(int x, int y, char dot) {
         int count = 0;
         for (int i = 0; i < winLength; i++) {
             if (field[x][y++] == dot) count++;
@@ -158,9 +298,9 @@ public class Map extends JPanel {
         return count == winLength;
     }
 
-
-
-    void drawX(Graphics g) {
+    private void drawX(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(3));
         for (int i = 0; i < fieldSizeY; i++) {
             for (int j = 0; j < fieldSizeX; j++) {
                 if (field[j][i] == dotPlayer){
@@ -175,16 +315,15 @@ public class Map extends JPanel {
                 }
             }
         }
-
     }
 
     // метод, проверяющий корректность координат
-    boolean isCoordCorrect(int x, int y) {
+    private boolean isCoordCorrect(int x, int y) {
         return (x >= 0 && x < fieldSizeX && y >= 0 && y < fieldSizeY && field[x][y] == empty);
     }
 
     // метод, инициализирующий поле
-    void fieldInit(int x, int y) {
+    private void fieldInit(int x, int y) {
         field = new char[x][y];
         for (int i = 0; i < y; i++) {
             for (int j = 0; j < x; j++) {
@@ -193,13 +332,9 @@ public class Map extends JPanel {
         }
     }
 
-    void update(MouseEvent e) {
-        currentCellClickX = e.getX() / cellWidth;
-        currentCellClickY = e.getY() / cellHeight;
-        repaint();
-    }
-
-    void render (Graphics g) {
+    private void render (Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(3));
         if (!isInitialized) return;
 
         int panelHeight = getHeight();

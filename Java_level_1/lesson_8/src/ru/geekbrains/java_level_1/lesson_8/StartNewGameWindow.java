@@ -23,7 +23,7 @@ public class StartNewGameWindow extends JFrame {
     private JSlider sliderFieldSize;
     private JSlider sliderWinLength;
     private final GameWindow gameWindow;
-    Map field;
+    private Map field;
 
     public StartNewGameWindow(GameWindow gameWindow, Map _field) {
         field = _field;
@@ -47,7 +47,7 @@ public class StartNewGameWindow extends JFrame {
         });
     }
 
-    void startGameClick(Map field) {
+    private void startGameClick(Map field) {
         int selectedGameMode;
         if (radioVsAi.isSelected()) selectedGameMode = 0;
         else selectedGameMode = 1;
@@ -56,7 +56,7 @@ public class StartNewGameWindow extends JFrame {
         setVisible(false);
     }
 
-    void addRadioButtons() {
+    private void addRadioButtons() {
         add(new JLabel("Выберите режим игры:"));
         gameMode.add(radioVsAi);
         gameMode.add(radioVsHuman);
@@ -64,7 +64,7 @@ public class StartNewGameWindow extends JFrame {
         add(radioVsHuman);
     }
 
-    void addSliders() {
+    private void addSliders() {
         add(new JLabel("Выберите размер поля:"));
         final JLabel lblFieldSize = new JLabel(STR_FIELD_SIZE + MIN_FIELD_SIZE);
         add(lblFieldSize);
