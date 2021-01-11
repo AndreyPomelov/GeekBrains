@@ -37,6 +37,7 @@ public class SettingsWindow extends JFrame {
         int posX = (int) rectangle.getCenterX() - WINDOW_WIDTH / 2;
         int posY = (int) rectangle.getCenterY() - WINDOW_HEIGHT / 2;
         setBounds(posX, posY, WINDOW_WIDTH, WINDOW_HEIGHT);
+        setResizable(false);
         setLayout(new GridLayout(14, 1));
 
         addRadioButtons();

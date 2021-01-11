@@ -4,6 +4,8 @@ public abstract class Player {
 
     private String name;
     private char dot;
+    boolean isAI;
+    GameLogic gameLogic;
 
     public Player(String name, char dot) {
         this.name = name;
@@ -24,5 +26,11 @@ public abstract class Player {
 
     public void setDot(char dot) {
         this.dot = dot;
+    }
+
+    public abstract void move(int x, int y);
+
+    public void setGameLogic(GameLogic gameLogic) {
+        this.gameLogic = gameLogic;
     }
 }
