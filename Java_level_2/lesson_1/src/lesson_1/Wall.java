@@ -1,11 +1,11 @@
 package lesson_1;
 
-public class Wall {
+public class Wall extends Obstacle {
 
     private final String name;
     private final int height;
 
-    public Wall(String name) {
+    Wall(String name) {
         this.name = name;
         height = (int) (Math.random() * 5) + 8;
     }
