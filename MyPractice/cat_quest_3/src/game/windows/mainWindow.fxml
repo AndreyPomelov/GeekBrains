@@ -10,24 +10,25 @@
 <?import java.net.URL?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.FlowPane?>
-<BorderPane fx:controller="sample.Controller"
+<?import javafx.scene.layout.VBox?>
+<BorderPane fx:controller="game.windows.Controller"
             xmlns:fx="http://javafx.com/fxml">
 
     <stylesheets>
-        <URL value="@css/style.css"/>
+        <URL value="@../css/style.css"/>
     </stylesheets>
 
     <top>
         <MenuBar>
             <Menu text="Меню">
-                <MenuItem text="Новая игра"/>
+                <MenuItem text="Новая игра" fx:id="menuItemStart" onAction="#menuItemStartPressed"/>
                 <MenuItem text="Выход" fx:id="menuItemExit" onAction="#menuItemExitPressed"/>
             </Menu>
         </MenuBar>
     </top>
 
     <left>
-        <Label text="Статус:" prefWidth="200"/>
+        <Label fx:id="leftPanelLabel" text="Статус:" prefWidth="200"/>
     </left>
 
     <center>
@@ -40,11 +41,11 @@
 
     <bottom>
         <FlowPane alignment="CENTER" hgap="5" vgap="5" prefHeight="50">
-            <Button text="Охота" prefWidth="150"/>
-            <Button text="Жрать" prefWidth="150"/>
-            <Button text="Балдеть" prefWidth="150"/>
-            <Button text="Разведка" prefWidth="150"/>
-            <Button text="Атака босса" prefWidth="150"/>
+            <Button text="Охота" prefWidth="150" onAction="#buttonHunt"/>
+            <Button text="Кормить" prefWidth="150" onAction="#buttonEat"/>
+            <Button text="Валерьянка" prefWidth="150" onAction="#buttonVal"/>
+            <Button text="Разведка" prefWidth="150" onAction="#buttonRecon"/>
+            <Button text="Атака босса" prefWidth="150" onAction="#buttonAttack"/>
         </FlowPane>
     </bottom>
 

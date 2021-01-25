@@ -1,0 +1,18 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane fx:controller="sample.Controller"
+            xmlns:fx="http://javafx.com/fxml">
+
+    <center>
+        <Label fx:id="label" text="Start"/>
+    </center>
+
+    <bottom>
+        <Button text="OK" onAction="#click"/>
+    </bottom>
+
+</BorderPane>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="game.windows.StartWindowController"
+            prefHeight="200.0" prefWidth="400.0">
+
+    <stylesheets>
+        <URL value="@../css/style.css"/>
+    </stylesheets>
+
+    <center>
+        <VBox alignment="CENTER">
+        <Label text="Назови своего кошака:"/>
+        <TextField fx:id="catName"/>
+            <Label text="Внимание! Старт новой игры удалит"/>
+            <Label text="весь прогресс в текущей игре!"/>
+        </VBox>
+    </center>
+
+    <left>
+        <FlowPane prefWidth="50"/>
+    </left>
+
+    <right>
+        <FlowPane prefWidth="50"/>
+    </right>
+
+    <bottom>
+        <FlowPane alignment="CENTER" hgap="5" vgap="5" prefHeight="50">
+        <Button text="Поехали!" prefWidth="150" alignment="CENTER" onAction="#buttonGo"/>
+        </FlowPane>
+    </bottom>
+
+</BorderPane>
