@@ -32,14 +32,8 @@ public class Main {
         for (int i = 0; i < multArrays.length; i++) {
             multArrays[i] = new float[massiveSize];
             System.arraycopy(array, massiveSize * i, multArrays[i], 0, massiveSize);
-        }
-
-        for (int i = 0; i < multArrays.length; i++) {
-            arrayProcessors[i] = new ArrayProcessor(multArrays[i], massiveSize);
+            arrayProcessors[i] = new ArrayProcessor(multArrays[i], massiveSize * i);
             threads[i] = new Thread(arrayProcessors[i]);
-        }
-
-        for (int i = 0; i < multArrays.length; i++) {
             threads[i].start();
             try {
                 threads[i].join();
@@ -96,10 +90,8 @@ public class Main {
 
         long timer = System.currentTimeMillis();
 
-        for (int i = 0; i < array.length; i++) {
-            array[i] = (float)(array[i] * Math.sin(0.2f + i / 5) *
-                    Math.cos(0.2f + i / 5) * Math.cos(0.4f + i / 2));
-        }
+        ArrayProcessor arrayProcessor = new ArrayProcessor(array, 0);
+        arrayProcessor.run();
 
         System.out.println("Время выполнения в 1 поток - " + (System.currentTimeMillis() - timer) + " миллисекунд");
         System.out.println("Проверочное значение - " + array[check]);

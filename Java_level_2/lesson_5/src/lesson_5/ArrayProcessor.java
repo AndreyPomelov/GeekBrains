@@ -2,8 +2,8 @@ package lesson_5;
 
 public class ArrayProcessor implements Runnable {
 
-    private float[] array;
-    private int correction;
+    private final float[] array;
+    private final int correction;
 
     public ArrayProcessor(float[] array, int correction) {
         this.array = array;
