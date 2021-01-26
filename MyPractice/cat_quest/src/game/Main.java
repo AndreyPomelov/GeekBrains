@@ -1,6 +1,5 @@
 package game;
 
-import game.windows.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,13 +10,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("windows/mainWindow.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
         primaryStage.setTitle("Игра \"Котоквест\"");
-        primaryStage.setScene(new Scene(root, 1000, 600));
+        primaryStage.setScene(new Scene(root, 1024, 768));
         primaryStage.setResizable(false);
-        Controller.mainStage = (Stage) primaryStage.getScene().getWindow();
         primaryStage.show();
     }
+
 
     public static void main(String[] args) {
         launch(args);
