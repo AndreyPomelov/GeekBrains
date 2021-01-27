@@ -14,6 +14,9 @@ public abstract class Animal {
         this.defense = defense;
     }
 
+    protected Animal() {
+    }
+
     public int getMaxHitPoints() {
         return maxHitPoints;
     }

@@ -15,7 +15,7 @@ public class StartWindowController {
         Logic.setStartWindowController(this);
         Stage stage = (Stage) catName.getScene().getWindow();
         stage.close();
-        Logic.getController().startNewGame(catName.getText());
+        Logic.startNewGame(catName.getText());
 
     }
 }

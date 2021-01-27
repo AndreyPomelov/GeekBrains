@@ -1,5 +1,7 @@
 package game.animals;
 
+import game.Controller;
+
 public class Cat extends Animal {
 
     private String name;
@@ -15,6 +17,7 @@ public class Cat extends Animal {
         this.foodCount = foodCount;
         this.valCount = valCount;
         this.exp = exp;
+        Controller.cat = this;
     }
 
     public String getName() {

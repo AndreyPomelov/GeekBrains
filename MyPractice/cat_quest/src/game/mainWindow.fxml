@@ -28,15 +28,15 @@
     </top>
 
     <left>
-        <Label fx:id="leftPanelLabel" text="Статус:" prefWidth="200"/>
+        <Label fx:id="leftPanelLabel" text=" Статус:" prefWidth="200"/>
     </left>
 
     <center>
-        <TextArea text="Игра Котоквест" editable="false" minWidth="200"/>
+        <TextArea fx:id="mainTextArea" text="Выберите пункт Новая игра в Меню" editable="false" minWidth="200"/>
     </center>
 
     <right>
-        <Label text="Данные разведки:" prefWidth="200"/>
+        <Label fx:id="rightPanelLabel" text=" Данные разведки:" prefWidth="200"/>
     </right>
 
     <bottom>

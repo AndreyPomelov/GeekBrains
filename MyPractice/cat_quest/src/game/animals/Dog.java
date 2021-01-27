@@ -1,17 +1,34 @@
 package game.animals;
 
+import game.Controller;
+import game.Logic;
+
 public class Dog extends Animal {
 
     private String name;
     private int level;
     private static final String[] names = {"Пумба", "Микки", "Чак", "Блейд", "Спайк"};
-    private static int nameCount = 0;
+    private static int nameCount;
+    private static int lastLevel;
 
-    public Dog(int maxHitPoints, int hitPoints, int power, int defense, String name, int level) {
-        super(maxHitPoints, hitPoints, power, defense);
+    public Dog() {
+        Logic.eraseRightPanel();
+        this.level = (int)(Math.random() * 3) + 1 + lastLevel;
+        lastLevel = this.level;
+        this.setMaxHitPoints(500 + 50*(this.level));
+        this.setHitPoints(500 + 50*(this.level));
+        this.setPower(50 + 5*(this.level));
+        this.setDefense(50 + 5*(this.level));
         this.name = names[nameCount];
-        if (nameCount < 4) nameCount++;
-        this.level = level;
+        nameCount++;
+    }
+
+    public static void setLastLevel(int lastLevel) {
+        Dog.lastLevel = lastLevel;
+    }
+
+    public static void setNameCount(int nameCount) {
+        Dog.nameCount = nameCount;
     }
 
     public String getName() {
