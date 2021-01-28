@@ -1,0 +1,52 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import java.net.URL?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane fx:controller="game.Controller"
+            xmlns:fx="http://javafx.com/fxml">
+
+    <stylesheets>
+        <URL value="@css/style.css"/>
+    </stylesheets>
+
+    <top>
+        <MenuBar>
+            <Menu text="Меню">
+                <MenuItem text="Новая игра" fx:id="menuItemStart" onAction="#menuItemStartPressed"/>
+                <MenuItem text="Выход" fx:id="menuItemExit" onAction="#menuItemExitPressed"/>
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <left>
+        <Label fx:id="leftPanelLabel" text=" Статус:" prefWidth="200"/>
+    </left>
+
+    <center>
+        <TextArea fx:id="mainTextArea" text="Выберите пункт Новая игра в Меню" editable="false" minWidth="200"/>
+    </center>
+
+    <right>
+        <Label fx:id="rightPanelLabel" text=" Данные разведки:" prefWidth="200"/>
+    </right>
+
+    <bottom>
+        <FlowPane alignment="CENTER" hgap="5" vgap="5" prefHeight="50">
+            <Button text="Охота" prefWidth="150" onAction="#buttonHunt"/>
+            <Button text="Кормить" prefWidth="150" onAction="#buttonEat"/>
+            <Button text="Валерьянка" prefWidth="150" onAction="#buttonVal"/>
+            <Button text="Разведка" prefWidth="150" onAction="#buttonRecon"/>
+            <Button text="Атака босса" prefWidth="150" onAction="#buttonAttack"/>
+        </FlowPane>
+    </bottom>
+
+</BorderPane>
