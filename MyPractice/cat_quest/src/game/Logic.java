@@ -2,6 +2,7 @@ package game;
 
 import game.animals.Cat;
 import game.animals.Dog;
+import javafx.application.Platform;
 
 public class Logic {
 
@@ -11,14 +12,10 @@ public class Logic {
     private static Dog dog;
     private static int chance;
     private static boolean winGame;
+    private static boolean allBossesBeaten = false;
 
-    public static void startNewGame(String catName) {
-        controller.mainTextArea.setText("Игра \"Котоквест\"" +
-                "\nРазработчик - Андрей Помелов" +
-                "\nДизайнер - Юлия Помелова" +
-                "\nEmail: k-udm@ya.ru" +
-                "\nг. Ижевск, 2021 г.\n\n" +
-                "Ты управляешь своим кошаком.\n" +
+    public static synchronized void startNewGame(String catName) {
+        controller.mainTextArea.setText("Ты управляешь своим кошаком.\n" +
                 "Задача кошака - спереть колбасу.\n" +
                 "Но колбаса охраняется пятью боссами-собакиренами.\n" +
                 "Удачи!\n\n");
@@ -30,7 +27,7 @@ public class Logic {
         dog = new Dog();
     }
 
-    public static void recon() {
+    public static synchronized void recon() {
 
         new Thread(() -> {
             if (cat == null) return;
@@ -53,11 +50,12 @@ public class Logic {
                 if (cat.getHitPoints() == 0) levelDown();
                 updateLeftPanel();
             }
+            controller.unblockButtons();
         }).start();
 
     }
 
-    private static void levelDown() {
+    private static synchronized void levelDown() {
         if (cat.getLevel() > 1) {
             controller.mainTextArea.appendText(cat.getName() + " теряет уровень!\n\n");
             cat.setLevel(cat.getLevel() - 1);
@@ -72,41 +70,77 @@ public class Logic {
         }
     }
 
-    private static void pause() throws InterruptedException {
+    private static synchronized void pause() throws InterruptedException {
         Thread.sleep(1500);
     }
 
-    public static void updateLeftPanel() {
-        controller.leftPanelLabel.setText(" Статус:\n Здоровье: \t" + cat.getHitPoints() + " из " + cat.getMaxHitPoints() +
-                "\n Сила: \t\t" + cat.getPower() +
-                "\n Защита: \t\t" + cat.getDefense() +
-                "\n Уровень: \t" + cat.getLevel() +
-                "\n Еда: \t\t" + cat.getFoodCount() +
-                "\n Валерьянка: \t" + cat.getValCount());
+    public static synchronized void updateLeftPanel() {
+        Platform.runLater(() -> {
+            controller.leftPanelLabel.setText(" Статус:\n Здоровье: \t" + cat.getHitPoints() + " из " + cat.getMaxHitPoints() +
+                    "\n Сила: \t\t" + cat.getPower() +
+                    "\n Защита: \t\t" + cat.getDefense() +
+                    "\n Уровень: \t" + cat.getLevel() +
+                    "\n Еда: \t\t" + cat.getFoodCount() +
+                    "\n Валерьянка: \t" + cat.getValCount());
+        });
     }
 
-    public static void updateRightPanel() {
-        controller.rightPanelLabel.setText(" Данные разведки:\n" +
-                " Босс " + dog.getName() + "\n Уровень: " + dog.getLevel());
+    public static synchronized void updateRightPanel() {
+        Platform.runLater(() -> {
+            controller.rightPanelLabel.setText(" Данные разведки:\n" +
+                    " Босс " + dog.getName() + "\n Уровень: " + dog.getLevel());
+        });
     }
 
-    public static void eraseRightPanel() {
-        controller.rightPanelLabel.setText(" Данные разведки:");
+    public static synchronized void eraseRightPanel() {
+        Platform.runLater(() -> {
+            controller.rightPanelLabel.setText(" Данные разведки:");
+        });
+
     }
 
-    public static Controller getController() {
+    public static synchronized Controller getController() {
         return controller;
     }
 
-    public static void setController(Controller controller) {
+    public static synchronized void setController(Controller controller) {
         Logic.controller = controller;
     }
 
-    public static StartWindowController getStartWindowController() {
+    public static synchronized StartWindowController getStartWindowController() {
         return startWindowController;
     }
 
-    public static void setStartWindowController(StartWindowController startWindowController) {
+    public static synchronized void setStartWindowController(StartWindowController startWindowController) {
         Logic.startWindowController = startWindowController;
+    }
+
+    public static synchronized void steal() {
+        new Thread(() -> {
+            controller.mainTextArea.appendText(cat.getName() + " пытается спереть колбасу.\n");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (allBossesBeaten) {
+                // TODO WINGAME
+            }
+            else {
+                controller.mainTextArea.appendText("Колбаса охраняется боссом! " + cat.getName() + " отхватывает люлей!\n");
+                cat.setHitPoints(cat.getHitPoints() - 100);
+                if (cat.getHitPoints() < 0) cat.setHitPoints(0);
+                controller.mainTextArea.appendText("Здоровье кошака упало до " + cat.getHitPoints() + "\n\n");
+                if (cat.getHitPoints() == 0) levelDown();
+                updateLeftPanel();
+            }
+            controller.unblockButtons();
+        }).start();
+    }
+
+    public static synchronized void eat() {
+        new Thread(() -> {
+            // TODO EAT
+        }).start();
     }
 }

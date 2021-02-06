@@ -4,16 +4,20 @@ import game.animals.Cat;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class Controller {
+public class Controller implements Initializable {
 
     @FXML
     public Label leftPanelLabel;
@@ -28,13 +32,16 @@ public class Controller {
     public TextArea mainTextArea;
 
     @FXML
+    public FlowPane buttonPanel;
+
+    @FXML
     private Controller controller;
 
     @FXML
     public static Cat cat;
 
     @FXML
-    public void menuItemStartPressed(ActionEvent actionEvent) throws IOException {
+    public synchronized void menuItemStartPressed(ActionEvent actionEvent) throws IOException {
         controller = this;
         Logic.setController(this);
         TextAppend.controller = this;
@@ -46,43 +53,72 @@ public class Controller {
     }
 
     @FXML
-    public void menuItemExitPressed(ActionEvent actionEvent) {
+    public synchronized void menuItemExitPressed(ActionEvent actionEvent) {
         Stage stage = (Stage) leftPanelLabel.getScene().getWindow();
         stage.close();
     }
 
     @FXML
-    public void buttonHunt(ActionEvent actionEvent) {
-        //if (cat == null) return;
-        new Thread(() -> {
-           mainTextArea.appendText("First\n");
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            mainTextArea.appendText("Second\n");
-        }).start();
+    public synchronized void buttonHunt(ActionEvent actionEvent) {
+        if (cat == null) return;
+        blockButtons();
+        mainTextArea.clear();
     }
 
     @FXML
-    public void buttonEat(ActionEvent actionEvent) {
+    public synchronized void buttonEat(ActionEvent actionEvent) {
         if (cat == null) return;
+        blockButtons();
+        mainTextArea.clear();
+        Logic.eat();
     }
 
     @FXML
-    public void buttonVal(ActionEvent actionEvent) {
+    public synchronized void buttonVal(ActionEvent actionEvent) {
         if (cat == null) return;
+        blockButtons();
+        mainTextArea.clear();
     }
 
     @FXML
-    public void buttonRecon(ActionEvent actionEvent) throws InterruptedException {
+    public synchronized void buttonRecon(ActionEvent actionEvent) throws InterruptedException {
         if (cat == null) return;
+        blockButtons();
+        mainTextArea.clear();
         Logic.recon();
     }
 
     @FXML
-    public void buttonAttack(ActionEvent actionEvent) throws IOException {
+    public synchronized void buttonAttack(ActionEvent actionEvent) throws IOException {
         if (cat == null) return;
+        blockButtons();
+        mainTextArea.clear();
+    }
+
+    @FXML
+    public synchronized void buttonSteal(ActionEvent actionEvent) {
+        if (cat == null) return;
+        blockButtons();
+        mainTextArea.clear();
+        Logic.steal();
+    }
+
+    @Override
+    public synchronized void initialize(URL location, ResourceBundle resources) {
+        mainTextArea.setText("Игра \"Котоквест\"" +
+                "\nРазработчик - Андрей Помелов" +
+                "\nДизайнер - Юлия Помелова" +
+                "\nEmail: k-udm@ya.ru" +
+                "\nг. Ижевск, 2021 г.\n\nДля начала игры выбери пункт \"Новая игра\" в Меню.\n\n");
+    }
+
+    @FXML
+    public synchronized void blockButtons() {
+        buttonPanel.setDisable(true);
+    }
+
+    @FXML
+    public synchronized void unblockButtons() {
+        buttonPanel.setDisable(false);
     }
 }

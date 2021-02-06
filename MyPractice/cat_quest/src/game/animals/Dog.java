@@ -8,7 +8,7 @@ public class Dog extends Animal {
     private String name;
     private int level;
     private static final String[] names = {"Пумба", "Микки", "Чак", "Блейд", "Спайк"};
-    private static int nameCount;
+    private static int nameCount = 0;
     private static int lastLevel;
 
     public Dog() {

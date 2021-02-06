@@ -40,12 +40,13 @@
     </right>
 
     <bottom>
-        <FlowPane alignment="CENTER" hgap="5" vgap="5" prefHeight="50">
-            <Button text="Охота" prefWidth="150" onAction="#buttonHunt"/>
-            <Button text="Кормить" prefWidth="150" onAction="#buttonEat"/>
-            <Button text="Валерьянка" prefWidth="150" onAction="#buttonVal"/>
-            <Button text="Разведка" prefWidth="150" onAction="#buttonRecon"/>
-            <Button text="Атака босса" prefWidth="150" onAction="#buttonAttack"/>
+        <FlowPane fx:id="buttonPanel" alignment="CENTER" hgap="5" vgap="5" prefHeight="50">
+            <Button text="Охота" prefWidth="160" onAction="#buttonHunt"/>
+            <Button text="Кормить" prefWidth="160" onAction="#buttonEat"/>
+            <Button text="Валерьянка" prefWidth="160" onAction="#buttonVal"/>
+            <Button text="Разведка" prefWidth="160" onAction="#buttonRecon"/>
+            <Button text="Атака босса" prefWidth="160" onAction="#buttonAttack"/>
+            <Button text="Тырить колбасу" prefWidth="160" onAction="#buttonSteal"/>
         </FlowPane>
     </bottom>
 
