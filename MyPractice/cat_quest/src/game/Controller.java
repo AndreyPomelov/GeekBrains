@@ -53,7 +53,16 @@ public class Controller {
 
     @FXML
     public void buttonHunt(ActionEvent actionEvent) {
-        if (cat == null) return;
+        //if (cat == null) return;
+        new Thread(() -> {
+           mainTextArea.appendText("First\n");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            mainTextArea.appendText("Second\n");
+        }).start();
     }
 
     @FXML
