@@ -27,6 +27,7 @@ public class Logic {
         dog = new Dog();
     }
 
+<<<<<<< Updated upstream
     public static synchronized void recon() {
 
         new Thread(() -> {
@@ -34,10 +35,20 @@ public class Logic {
             controller.mainTextArea.appendText(cat.getName() + " пытается провести разведку\n");
             try {
                 Thread.sleep(3000);
+=======
+    public static void recon() throws InterruptedException {
+
+        if (cat == null) return;
+        Thread thread = new Thread(() -> {
+        controller.mainTextArea.appendText(cat.getName() + " пытается провести разведку\n");
+            try {
+                pause();
+>>>>>>> Stashed changes
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             chance = (int)(Math.random() * 5);
+<<<<<<< Updated upstream
             if (chance == 4) {
                 controller.mainTextArea.appendText("Разведка успешна!\nИмя босса - " +
                         dog.getName() + "\nУровень - " + dog.getLevel() + "\n\n");
@@ -53,6 +64,22 @@ public class Logic {
             controller.unblockButtons();
         }).start();
 
+=======
+        if (chance == 4) {
+            controller.mainTextArea.appendText("Разведка успешна!\nИмя босса - " +
+                    dog.getName() + "\nУровень - " + dog.getLevel() + "\n\n");
+            updateRightPanel();
+        } else {
+            controller.mainTextArea.appendText("Разведка провалилась! " + cat.getName() + " отхватывает люлей!\n");
+            cat.setHitPoints(cat.getHitPoints() - 100);
+            if (cat.getHitPoints() < 0) cat.setHitPoints(0);
+            controller.mainTextArea.appendText("Здоровье кошака упало до " + cat.getHitPoints() + "\n\n");
+            if (cat.getHitPoints() == 0) levelDown();
+            updateLeftPanel();
+        }
+        });
+        thread.start();
+>>>>>>> Stashed changes
     }
 
     private static synchronized void levelDown() {
