@@ -1,4 +1,4 @@
-package client;
+package main.java.client;
 
 import commands.Command;
 import javafx.application.Platform;
