@@ -28,7 +28,6 @@ public class Logic {
     }
 
     public static synchronized void recon() {
-
         new Thread(() -> {
             if (cat == null) return;
             controller.mainTextArea.appendText(cat.getName() + " пытается провести разведку\n");
@@ -52,7 +51,17 @@ public class Logic {
             }
             controller.unblockButtons();
         }).start();
+    }
 
+    private static synchronized void levelUp() {
+        controller.mainTextArea.appendText(cat.getName() + " повышает свой уровень!");
+        cat.setLevel(cat.getLevel() + 1);
+        cat.setMaxHitPoints(cat.getMaxHitPoints() + 50);
+        cat.setHitPoints(cat.getMaxHitPoints());
+        cat.setPower(cat.getPower() + 5);
+        cat.setDefense(cat.getDefense() + 5);
+        cat.setExp(0);
+        updateLeftPanel();
     }
 
     private static synchronized void levelDown() {
@@ -96,7 +105,6 @@ public class Logic {
         Platform.runLater(() -> {
             controller.rightPanelLabel.setText(" Данные разведки:");
         });
-
     }
 
     public static synchronized Controller getController() {
@@ -140,7 +148,40 @@ public class Logic {
 
     public static synchronized void eat() {
         new Thread(() -> {
-            // TODO EAT
+            if (cat.getFoodCount() > 0) {
+                cat.setFoodCount(cat.getFoodCount() - 1);
+                cat.setHitPoints(cat.getHitPoints() + 100);
+                if (cat.getHitPoints() > cat.getMaxHitPoints()) cat.setHitPoints(cat.getMaxHitPoints());
+                controller.mainTextArea.appendText(cat.getName() +
+                        " с удовольствием хавает!\nЗдоровье увеличено до " + cat.getHitPoints());
+            } else controller.mainTextArea.appendText(cat.getName() +
+                    " смотрит на тебя голодными глазками.\nЧем ты собрался кошака кормить? Еды-то нет!");
+            controller.unblockButtons();
         }).start();
+    }
+
+    public static synchronized void val() {
+        if (cat.getValCount() > 0) {
+            cat.setValCount(cat.getValCount() - 1);
+            chance = (int)(Math.random() * 5) + 1;
+            if (chance == 1) {
+                cat.setMaxHitPoints(cat.getMaxHitPoints() + 50);
+                controller.mainTextArea.appendText(cat.getName() + " чувствует прилив здоровья!");
+            } else if (chance == 2) {
+                cat.setPower(cat.getPower() + 5);
+                controller.mainTextArea.appendText(cat.getName() + " чувствует прилив силы!");
+            } else if (chance == 3) {
+                cat.setDefense(cat.getDefense() + 5);
+                controller.mainTextArea.appendText(cat.getName() + " чувствует свою непобедимость!");
+            } else if (chance == 4) {
+                cat.setExp(cat.getExp() + 1);
+                controller.mainTextArea.appendText(cat.getName() + " чувствует, что становится немного опытнее!");
+                if (cat.getExp() == 3) levelUp();
+            } else if (chance == 5) {
+                controller.mainTextArea.appendText(cat.getName() + " ничего особенного не чувствует...");
+            }
+        } else controller.mainTextArea.appendText(cat.getName() + " грустно смотрит на тебя.\nНе стыдно кошака дразнить? У тебя нет валерьянки!");
+        updateLeftPanel();
+        controller.unblockButtons();
     }
 }
