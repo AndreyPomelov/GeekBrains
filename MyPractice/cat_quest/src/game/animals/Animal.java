@@ -2,6 +2,12 @@ package game.animals;
 
 public abstract class Animal {
 
+    public String catMessage1;
+    public String catMessage2;
+    public String catMessage3;
+    public String enemyMessage1;
+    public String enemyMessage2;
+    public String enemyMessage3;
     private int maxHitPoints;
     private int hitPoints;
     private int power;

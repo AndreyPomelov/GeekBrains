@@ -63,6 +63,7 @@ public class Controller implements Initializable {
         if (cat == null) return;
         blockButtons();
         mainTextArea.clear();
+        Logic.hunt();
     }
 
     @FXML

@@ -5,6 +5,13 @@ import game.Logic;
 
 public class Dog extends Animal {
 
+    public String catMessage1 = " опрокидывает цветочный горшок на собакирена!";
+    public String catMessage2 = " прищемляет собакирену хвост дверью!";
+    public String catMessage3 = " обходит сзади и кусает собакирена за задницу!";
+    public String enemyMessage1 = " запинается и падает прямо на кошака!";
+    public String enemyMessage2 = " мощно кусает кошака!";
+    public String enemyMessage3 = " своим весом впечатывает кошака в стену!";
+
     private String name;
     private int level;
     private static final String[] names = {"Пумба", "Микки", "Чак", "Блейд", "Спайк"};

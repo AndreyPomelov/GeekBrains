@@ -1,14 +1,13 @@
 package game;
 
-import game.animals.Cat;
-import game.animals.Dog;
+import game.animals.*;
 import javafx.application.Platform;
 
 public class Logic {
 
     private static Controller controller;
     private static StartWindowController startWindowController;
-    private static Cat cat;
+    public static Cat cat;
     private static Dog dog;
     private static int chance;
     private static boolean winGame;
@@ -179,5 +178,84 @@ public class Logic {
         } else controller.mainTextArea.appendText(cat.getName() + " грустно смотрит на тебя.\nНе стыдно кошака дразнить? У тебя нет валерьянки!");
         updateLeftPanel();
         controller.unblockButtons();
+    }
+
+    public static synchronized void hunt() {
+        new Thread(() -> {
+            controller.mainTextArea.appendText(cat.getName() + " выходит на охоту.\n\n");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            chance = (int)(Math.random() * 25) + 1;
+            if (chance == 1) {
+                controller.mainTextArea.appendText(cat.getName() + " находит валерьянку!\n");
+                cat.setValCount(cat.getValCount() + 1);
+                updateLeftPanel();
+            } else if (chance >= 2 && chance <= 4) {
+                controller.mainTextArea.appendText(cat.getName() + " находит порцию корма!\n");
+                cat.setFoodCount(cat.getFoodCount() + 1);
+                updateLeftPanel();
+            } else if (chance >= 5 && chance <= 9) {
+                controller.mainTextArea.appendText("Неожиданно из темноты на кошака нападает крыса-мутант!\n\n");
+                fight(new Rat());
+            } else if (chance >= 10 && chance <= 16) {
+                controller.mainTextArea.appendText(cat.getName() + " замечает мышь!\n\n");
+                fight(new Mouse());
+            } else controller.mainTextArea.appendText("Охота не удалась!\n");
+            controller.unblockButtons();
+        }).start();
+    }
+
+    public static synchronized void fight(Animal enemy) {
+        new Thread(() -> {
+            while (cat.getHitPoints() > 0 && enemy.getHitPoints() > 0) {
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (cat.getHitPoints() > 0) {
+                    chance = (int)(Math.random() * 3);
+                    switch (chance) {
+                        case 0 : controller.mainTextArea.appendText(cat.getName() + enemy.catMessage1);
+                        case 1 : controller.mainTextArea.appendText(cat.getName() + enemy.catMessage2);
+                        case 2 : controller.mainTextArea.appendText(cat.getName() + enemy.catMessage3);
+                    }
+                    if (chance == 0) System.out.println(cat.getName() + " опрокидывает цветочный горшок на собакирена!");
+                    if (chance == 1) System.out.println(cat.getName() + " прищемляет собакирену хвост дверью!");
+                    if (chance == 2) System.out.println(cat.getName() + " обходит сзади и кусает собакирена за задницу!");
+                    chance = (int)(Math.random() * 41);
+                    hitPower = cat.getPower() - 20 + chance;
+                    chance = (int)(Math.random() * 41);
+                    damage = hitPower - ((dog.getDefense() - 20 + chance)/2);
+                    if (damage < 0) damage = 0;
+                    System.out.println("Сила атаки - " + damage);
+                    dog.setHitPoints(dog.getHitPoints() - damage);
+                    if (dog.getHitPoints() < 0) dog.setHitPoints(0);
+                    if (damage > 0) System.out.println("Здоровье босса-собакирена падает до " + dog.getHitPoints());
+                }
+                pause();
+                pause();
+                if (dog.getHitPoints() > 0) {
+                    System.out.println();
+                    chance = (int)(Math.random() * 3);
+                    if (chance == 0) System.out.println(dog.getName() + " запинается и падает прямо на кошака!");
+                    if (chance == 1) System.out.println(dog.getName() + " мощно кусает кошака!");
+                    if (chance == 2) System.out.println(dog.getName() + " своим весом впечатывает кошака в стену!");
+                    chance = (int)(Math.random() * 41);
+                    hitPower = dog.getPower() - 20 + chance;
+                    chance = (int)(Math.random() * 41);
+                    damage = hitPower - ((cat.getDefense() - 20 + chance)/2);
+                    if (damage < 0) damage = 0;
+                    System.out.println("Сила атаки - " + damage);
+                    cat.setHitPoints(cat.getHitPoints() - damage);
+                    if (cat.getHitPoints() < 0) cat.setHitPoints(0);
+                    if (damage > 0) System.out.println("Здоровье кошака падает до " + cat.getHitPoints());
+                }
+            }
+
+        }).start();
     }
 }
