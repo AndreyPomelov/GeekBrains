@@ -5,6 +5,13 @@ import game.Logic;
 
 public class Dog extends Animal {
 
+    public String catMessage1;
+    public String catMessage2;
+    public String catMessage3;
+    public String enemyMessage1;
+    public String enemyMessage2;
+    public String enemyMessage3;
+
     private String name;
     private int level;
     private static final String[] names = {"Пумба", "Микки", "Чак", "Блейд", "Спайк"};
@@ -20,6 +27,13 @@ public class Dog extends Animal {
         this.setPower(50 + 5*(this.level));
         this.setDefense(50 + 5*(this.level));
         this.name = names[nameCount];
+        super.enemyMessage1 = name + " запинается и падает прямо на кошака!";
+        super.enemyMessage2 = name + " мощно кусает кошака!";
+        super.enemyMessage3 = name + " своим весом впечатывает кошака в стену!";
+        super.catMessage1 = " опрокидывает цветочный горшок на собакирена!";
+        super.catMessage2 = " прищемляет собакирену хвост дверью!";
+        super.catMessage3 = " обходит сзади и кусает собакирена за задницу!";
+        super.whatAnimal = "Dog";
         nameCount++;
     }
 

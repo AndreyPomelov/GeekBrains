@@ -32,7 +32,7 @@
     </left>
 
     <center>
-        <TextArea fx:id="mainTextArea" text="Выберите пункт Новая игра в Меню" editable="false" minWidth="200"/>
+        <TextArea fx:id="mainTextArea" text="Выберите пункт Новая игра в Меню" editable="false" wrapText="true" minWidth="200"/>
     </center>
 
     <right>
