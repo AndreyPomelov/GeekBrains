@@ -8,6 +8,7 @@ public abstract class Animal {
     public String enemyMessage1;
     public String enemyMessage2;
     public String enemyMessage3;
+    public String whatAnimal;
     private int maxHitPoints;
     private int hitPoints;
     private int power;
