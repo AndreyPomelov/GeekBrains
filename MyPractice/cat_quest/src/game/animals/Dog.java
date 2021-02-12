@@ -5,13 +5,6 @@ import game.Logic;
 
 public class Dog extends Animal {
 
-    public String catMessage1;
-    public String catMessage2;
-    public String catMessage3;
-    public String enemyMessage1;
-    public String enemyMessage2;
-    public String enemyMessage3;
-
     private String name;
     private int level;
     private static final String[] names = {"Пумба", "Микки", "Чак", "Блейд", "Спайк"};

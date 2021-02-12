@@ -1,6 +1,7 @@
 package game;
 
 import game.animals.Cat;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,6 +50,7 @@ public class Controller implements Initializable {
         Scene scene = new Scene(root);
         Stage stage = new Stage();
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 
@@ -123,5 +125,22 @@ public class Controller implements Initializable {
     @FXML
     public synchronized void unblockButtons() {
         buttonPanel.setDisable(false);
+    }
+
+    @FXML
+    public synchronized void gameOver() throws IOException {
+        // TODO разобраться с эксепшенами
+        Platform.runLater(() -> {
+            try {
+                Parent root1 = FXMLLoader.load(getClass().getResource("gameOverWindow.fxml"));
+                Scene scene = new Scene(root1);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setResizable(false);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
