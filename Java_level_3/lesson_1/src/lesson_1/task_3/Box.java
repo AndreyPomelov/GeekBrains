@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class Box <T extends Fruit> {
 
-    private ArrayList<T> fruits;
+    private final ArrayList<T> fruits = new ArrayList<>();
 
     public void put(T fruit) {
         fruits.add(fruit);
@@ -18,5 +18,14 @@ public class Box <T extends Fruit> {
             weight += fruit.weight;
         }
         return weight;
+    }
+
+    public boolean compare(Box<?> box) {
+        return this.getWeight() == box.getWeight();
+    }
+
+    public void pour(Box<T> destinationBox) {
+        destinationBox.fruits.addAll(this.fruits);
+        this.fruits.clear();
     }
 }
