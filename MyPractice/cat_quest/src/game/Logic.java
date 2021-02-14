@@ -3,6 +3,8 @@ package game;
 import game.animals.*;
 import javafx.application.Platform;
 
+import java.io.IOException;
+
 public class Logic {
 
     private static Controller controller;
@@ -13,7 +15,7 @@ public class Logic {
     public static Mouse mouse;
     private static int chance;
     private static boolean winGame = false;
-    private static boolean allBossesBeaten = false;
+    private static boolean allBossesBeaten = true;
 
     public static synchronized void startNewGame(String catName) {
         controller.mainTextArea.setText("Ты управляешь своим кошаком.\n" +
@@ -67,18 +69,26 @@ public class Logic {
         }
 
     private static synchronized void levelDown() {
-        if (cat.getLevel() > 1) {
-            controller.mainTextArea.appendText(cat.getName() + " теряет уровень!\n\n");
-            cat.setLevel(cat.getLevel() - 1);
-            cat.setMaxHitPoints(cat.getMaxHitPoints() - 50);
+        new Thread(() -> {
+            if (cat.getLevel() > 1) {
+                controller.mainTextArea.appendText(cat.getName() + " теряет уровень!\n\n");
+                cat.setLevel(cat.getLevel() - 1);
+                cat.setMaxHitPoints(cat.getMaxHitPoints() - 50);
+                cat.setPower(cat.getPower() - 5);
+                cat.setDefense(cat.getDefense() - 5);
+            } else {
+                controller.mainTextArea.appendText(cat.getName() + " немного отдыхает и восстанавливает силы...\n\n");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                controller.mainTextArea.appendText("Отдых окончен! Силы восстановлены!\n\n");
+            }
             cat.setHitPoints(cat.getMaxHitPoints());
-            cat.setPower(cat.getPower() - 5);
-            cat.setDefense(cat.getDefense() - 5);
             cat.setExp(0);
             updateLeftPanel();
-        } else {
-            //TODO конец игры
-        }
+        }).start();
     }
 
     public static synchronized void updateLeftPanel() {
@@ -123,7 +133,7 @@ public class Logic {
 
     public static synchronized void steal() {
         new Thread(() -> {
-            controller.mainTextArea.appendText(cat.getName() + " пытается спереть колбасу.\n");
+            controller.mainTextArea.appendText(cat.getName() + " пытается спереть колбасу.\n\n");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
@@ -131,17 +141,31 @@ public class Logic {
             }
             if (allBossesBeaten) {
                 winGame = true;
-                // TODO WINGAME
+                controller.mainTextArea.appendText("Попытка успешна!!!\n\n");
+                cat = null;
+                try {
+                    controller.gameOver();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                controller.unblockButtons();
             }
             else {
                 controller.mainTextArea.appendText("Колбаса охраняется боссом! " + cat.getName() + " отхватывает люлей!\n");
                 cat.setHitPoints(cat.getHitPoints() - 100);
                 if (cat.getHitPoints() < 0) cat.setHitPoints(0);
                 controller.mainTextArea.appendText("Здоровье кошака упало до " + cat.getHitPoints() + "\n\n");
-                if (cat.getHitPoints() == 0) levelDown();
+                if (cat.getHitPoints() == 0) {
+                    levelDown();
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 updateLeftPanel();
+                controller.unblockButtons();
             }
-            controller.unblockButtons();
         }).start();
     }
 
@@ -284,7 +308,7 @@ public class Logic {
                     }
                 }
             }
-            catch (NullPointerException e) {
+            catch (Exception e) {
                 System.out.println("В битве поймано исключение");
             }
             if (cat.getHitPoints() <=0) {
