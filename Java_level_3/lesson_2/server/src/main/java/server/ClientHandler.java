@@ -32,6 +32,11 @@ public class ClientHandler {
                     //цикл аутентификации
                     while (true) {
                         String str = in.readUTF();
+
+                        // В цикле аутентификации нужна проверка на цензуру, например,
+                        // для того чтобы нельзя было зарегистрироваться с нецензурным ником.
+                        str = censorship(str);
+
                         if (str.startsWith("/")) {
                             if (str.equals(Command.END)) {
                                 System.out.println("client want to disconnected ");
