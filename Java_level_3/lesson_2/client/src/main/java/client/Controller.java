@@ -20,13 +20,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class Controller implements Initializable {
     @FXML
@@ -43,6 +41,12 @@ public class Controller implements Initializable {
     private HBox authPanel;
     @FXML
     private HBox messagePanel;
+    @FXML
+    private final String HISTORY_DIR_PATH = "client/history";
+    @FXML
+    private final String HISTORY_FILE_NAME = "history.txt";
+    @FXML
+    private final int NUMBER_OF_LINES_TO_RESTORE = 100;
 
     private static Socket socket;
     private static final int PORT = 8189;
@@ -117,6 +121,7 @@ public class Controller implements Initializable {
                             if (str.startsWith(Command.AUTH_OK)) {
                                 nickname = str.split("\\s")[1];
                                 setAuthenticated(true);
+                                restoreHistory();
                                 break;
                             }
 
@@ -151,6 +156,7 @@ public class Controller implements Initializable {
                                 });
                             }
                         } else {
+                            saveToHistory(str);
                             textArea.appendText(str + "\n");
                         }
                     }
@@ -174,6 +180,45 @@ public class Controller implements Initializable {
         }
     }
 
+    public void saveToHistory (String message) throws IOException {
+        File dir = new File(HISTORY_DIR_PATH);
+        File file = new File(HISTORY_DIR_PATH, HISTORY_FILE_NAME);
+        if (!dir.exists()) dir.mkdir();
+        if (!file.exists()) file.createNewFile();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+        writer.write(message + "\n");
+        writer.flush();
+        writer.close();
+    }
+
+    public void restoreHistory () throws IOException {
+        File dir = new File(HISTORY_DIR_PATH);
+        File file = new File(HISTORY_DIR_PATH, HISTORY_FILE_NAME);
+        if (!dir.exists() || !file.exists()) return;
+        // Счётчик строк в файле
+        // Не очень нравится такой подход, но не нашёл метода, который возвращал бы количество строк в файле
+        Scanner scanner = new Scanner(file);
+        int lineCount = 0;
+        while (scanner.hasNextLine()) {
+            lineCount++;
+            scanner.nextLine();
+        }
+        scanner.close();
+        // Конец счётчика строк в файле
+        // Задаём стартовую строку, с которой будет восстановлена история
+        int startLine = lineCount - NUMBER_OF_LINES_TO_RESTORE;
+        if (startLine < 0) startLine = 0;
+        LineNumberReader reader = new LineNumberReader(new FileReader(file));
+        for (int i = 0; i < startLine; i++) {
+            reader.readLine();
+        }
+        while (true) {
+            String message = reader.readLine();
+            if (message != null) textArea.appendText(message + "\n");
+            else break;
+        }
+        reader.close();
+    }
 
     public void sendMsg(ActionEvent actionEvent) {
         try {
