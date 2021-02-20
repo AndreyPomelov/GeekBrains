@@ -46,6 +46,7 @@ public class Controller implements Initializable {
         controller = this;
         Logic.setController(this);
         TextAppend.controller = this;
+        GameOverWindowController.controller = this;
         Parent root = FXMLLoader.load(getClass().getResource("startWindow.fxml"));
         Scene scene = new Scene(root);
         Stage stage = new Stage();
@@ -128,14 +129,16 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public synchronized void gameOver() throws IOException {
-        // TODO разобраться с эксепшенами
+    public synchronized void gameOver(boolean wingame) throws IOException {
         Platform.runLater(() -> {
+            Parent root = null;
             try {
-                Parent root1 = FXMLLoader.load(getClass().getResource("gameOverWindow.fxml"));
-                Scene scene = new Scene(root1);
+                if (wingame) root = FXMLLoader.load(getClass().getResource("gameOverWindow.fxml"));
+                else root = FXMLLoader.load(getClass().getResource("badEnd.fxml"));
+                Scene scene = new Scene(root);
                 Stage stage = new Stage();
                 stage.setScene(scene);
+                stage.setTitle("Игра окончена!");
                 stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {

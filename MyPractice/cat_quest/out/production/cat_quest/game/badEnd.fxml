@@ -18,15 +18,12 @@
 
     <center>
         <VBox alignment="CENTER">
-            <Label text="ПОЗДРАВЛЯЮ!!!" wrapText="true"/>
+            <Label text="ПОРАЖЕНИЕ!!!" wrapText="true"/>
             <Label/>
-            <Label text="Твой кошак успешно прошёл все испытания," wrapText="true"/>
-            <Label text="победил боссов и заслуженно получил свой приз!" wrapText="true"/>
+            <Label text="Твой кошак не смог противостоять" wrapText="true"/>
+            <Label text="всем препятствиям и проиграл..." wrapText="true"/>
             <Label/>
-            <Label text="Спасибо за игру!" wrapText="true"/>
-            <Label/>
-            <Label text="Классная игра получилась," wrapText="true"/>
-            <Label text="не правда ли?" wrapText="true"/>
+            <Label text="Попробуй ещё раз!" wrapText="true"/>
         </VBox>
     </center>
 
@@ -40,9 +37,7 @@
 
     <bottom>
         <FlowPane fx:id="buttonPanel" alignment="CENTER" hgap="5" vgap="5" prefHeight="50">
-            <Button fx:id="button" text="Да!" onAction="#buttonPressed"/>
-            <Button text="Конечно!" onAction="#buttonPressed"/>
-            <Button text="Согласен!" onAction="#buttonPressed"/>
+            <Button fx:id="button" text="Хорошо" onAction="#buttonPressed"/>
         </FlowPane>
     </bottom>
 

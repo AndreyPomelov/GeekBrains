@@ -10,7 +10,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="game.GameOverWindowController"
-            prefHeight="200.0" prefWidth="400.0">
+            prefHeight="300.0" prefWidth="500.0">
 
     <stylesheets>
         <URL value="@css/style.css"/>
@@ -18,10 +18,15 @@
 
     <center>
         <VBox alignment="CENTER">
-            <Label text="ПОЗДРАВЛЯЮ!!!"/>
-            <Label text="Твой кошак успешно прошёл все испытания, победил боссов и заслуженно получил свой приз!" wrapText="true"/>
-            <Label text="Спасибо за игру!"/>
-            <Label text="Классная игра получилась, не правда ли?"/>
+            <Label text="ПОЗДРАВЛЯЮ!!!" wrapText="true"/>
+            <Label/>
+            <Label text="Твой кошак успешно прошёл все испытания," wrapText="true"/>
+            <Label text="победил боссов и заслуженно получил свой приз!" wrapText="true"/>
+            <Label/>
+            <Label text="Спасибо за игру!" wrapText="true"/>
+            <Label/>
+            <Label text="Классная игра получилась," wrapText="true"/>
+            <Label text="не правда ли?" wrapText="true"/>
         </VBox>
     </center>
 
@@ -34,11 +39,11 @@
     </right>
 
     <bottom>
-        <HBox>
+        <FlowPane fx:id="buttonPanel" alignment="CENTER" hgap="5" vgap="5" prefHeight="50">
             <Button fx:id="button" text="Да!" onAction="#buttonPressed"/>
             <Button text="Конечно!" onAction="#buttonPressed"/>
-            <Button text="Согласен!"onAction="#buttonPressed"/>
-        </HBox>
+            <Button text="Согласен!" onAction="#buttonPressed"/>
+        </FlowPane>
     </bottom>
 
 </BorderPane>

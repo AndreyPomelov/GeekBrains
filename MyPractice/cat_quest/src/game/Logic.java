@@ -15,7 +15,7 @@ public class Logic {
     public static Mouse mouse;
     private static int chance;
     private static boolean winGame = false;
-    private static boolean allBossesBeaten = true;
+    private static boolean allBossesBeaten = false;
 
     public static synchronized void startNewGame(String catName) {
         controller.mainTextArea.setText("Ты управляешь своим кошаком.\n" +
@@ -23,6 +23,8 @@ public class Logic {
                 "Но колбаса охраняется пятью боссами-собакиренами.\n" +
                 "Прокачивай кошака на охоте, побеждай боссов, забирай колбасу.\n" +
                 "Удачи!\n\n");
+        winGame = false;
+        allBossesBeaten = false;
         cat = new Cat(500, 500, 50, 50,
                 catName, 1, 0, 0, 0);
         updateLeftPanel();
@@ -32,6 +34,11 @@ public class Logic {
     }
 
     public static synchronized void recon() {
+        if (allBossesBeaten) {
+            controller.mainTextArea.appendText("Все боссы повержены!\n");
+            controller.unblockButtons();
+            return;
+        }
         new Thread(() -> {
             if (cat == null) return;
             controller.mainTextArea.appendText(cat.getName() + " пытается провести разведку\n");
@@ -142,9 +149,15 @@ public class Logic {
             if (allBossesBeaten) {
                 winGame = true;
                 controller.mainTextArea.appendText("Попытка успешна!!!\n\n");
-                cat = null;
                 try {
-                    controller.gameOver();
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                cat = null;
+                Controller.cat = null;
+                try {
+                    controller.gameOver(winGame);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -354,6 +367,11 @@ public class Logic {
     }
 
     public static synchronized void bossAttack() {
+        if (allBossesBeaten) {
+            controller.mainTextArea.appendText("Все боссы повержены!\n");
+            controller.unblockButtons();
+            return;
+        }
         controller.mainTextArea.appendText(cat.getName() + " выходит в бой против босса!\nЕму противостоит босс " + dog.getName() + "!\n\n");
         fight(dog);
     }
