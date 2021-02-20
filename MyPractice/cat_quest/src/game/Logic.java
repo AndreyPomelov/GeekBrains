@@ -84,6 +84,7 @@ public class Logic {
                 cat.setPower(cat.getPower() - 5);
                 cat.setDefense(cat.getDefense() - 5);
             } else {
+                controller.blockButtons();
                 controller.mainTextArea.appendText(cat.getName() + " немного отдыхает и восстанавливает силы...\n\n");
                 try {
                     Thread.sleep(5000);
@@ -91,6 +92,7 @@ public class Logic {
                     e.printStackTrace();
                 }
                 controller.mainTextArea.appendText("Отдых окончен! Силы восстановлены!\n\n");
+                controller.unblockButtons();
             }
             cat.setHitPoints(cat.getMaxHitPoints());
             cat.setExp(0);
