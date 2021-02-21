@@ -85,6 +85,11 @@ public class Logic {
                 cat.setDefense(cat.getDefense() - 5);
             } else {
                 controller.blockButtons();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 controller.mainTextArea.appendText(cat.getName() + " немного отдыхает и восстанавливает силы...\n\n");
                 try {
                     Thread.sleep(5000);

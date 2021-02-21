@@ -57,6 +57,7 @@ public class Controller implements Initializable {
 
     @FXML
     public synchronized void menuItemExitPressed(ActionEvent actionEvent) {
+        // TODO Save game
         Stage stage = (Stage) leftPanelLabel.getScene().getWindow();
         stage.close();
     }
@@ -139,6 +140,30 @@ public class Controller implements Initializable {
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 stage.setTitle("Игра окончена!");
+                stage.setResizable(false);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void menuItemSavePressed(ActionEvent actionEvent) {
+        if (cat == null) return;
+    }
+
+    public void menuItemLoadPressed(ActionEvent actionEvent) {
+    }
+
+    public void menuItemHelpPressed(ActionEvent actionEvent) {
+        Platform.runLater(() -> {
+            Parent root = null;
+            try {
+                root = FXMLLoader.load(getClass().getResource("helpWindow.fxml"));
+                Scene scene = new Scene(root);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setTitle("Справка по игре.");
                 stage.setResizable(false);
                 stage.show();
             } catch (IOException e) {
