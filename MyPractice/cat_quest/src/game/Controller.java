@@ -9,16 +9,20 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class Controller implements Initializable, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @FXML
     public Label leftPanelLabel;
@@ -36,7 +40,10 @@ public class Controller implements Initializable {
     public FlowPane buttonPanel;
 
     @FXML
-    private Controller controller;
+    public Menu menu;
+
+    @FXML
+    public static Controller controller;
 
     @FXML
     public static Cat cat;
@@ -56,8 +63,8 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public synchronized void menuItemExitPressed(ActionEvent actionEvent) {
-        // TODO Save game
+    public synchronized void menuItemExitPressed(ActionEvent actionEvent) throws IOException {
+        Logic.saveGame();
         Stage stage = (Stage) leftPanelLabel.getScene().getWindow();
         stage.close();
     }
@@ -117,16 +124,19 @@ public class Controller implements Initializable {
                 "\nДизайнер - Юлия Помелова" +
                 "\nEmail: k-udm@ya.ru" +
                 "\nг. Ижевск, 2021 г.\n\nДля начала игры выбери пункт \"Новая игра\" в Меню.\n\n");
+        controller = this;
     }
 
     @FXML
     public synchronized void blockButtons() {
         buttonPanel.setDisable(true);
+        menu.setDisable(true);
     }
 
     @FXML
     public synchronized void unblockButtons() {
         buttonPanel.setDisable(false);
+        menu.setDisable(false);
     }
 
     @FXML
@@ -148,11 +158,13 @@ public class Controller implements Initializable {
         });
     }
 
-    public void menuItemSavePressed(ActionEvent actionEvent) {
+    public void menuItemSavePressed(ActionEvent actionEvent) throws IOException {
         if (cat == null) return;
+        Logic.saveGame();
     }
 
-    public void menuItemLoadPressed(ActionEvent actionEvent) {
+    public void menuItemLoadPressed(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
+        Logic.loadGame();
     }
 
     public void menuItemHelpPressed(ActionEvent actionEvent) {

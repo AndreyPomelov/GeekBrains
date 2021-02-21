@@ -20,7 +20,7 @@
 
     <top>
         <MenuBar>
-            <Menu text="Меню">
+            <Menu fx:id="menu" text="Меню">
                 <MenuItem text="Новая игра" fx:id="menuItemStart" onAction="#menuItemStartPressed"/>
                 <MenuItem text="Сохранить игру" onAction="#menuItemSavePressed"/>
                 <MenuItem text="Загрузить игру" onAction="#menuItemLoadPressed"/>

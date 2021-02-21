@@ -3,9 +3,11 @@ package game;
 import game.animals.*;
 import javafx.application.Platform;
 
-import java.io.IOException;
+import java.io.*;
 
 public class Logic {
+
+    private static final String SAVED_GAME_PATH = "save.ser";
 
     private static Controller controller;
     private static StartWindowController startWindowController;
@@ -381,5 +383,30 @@ public class Logic {
         }
         controller.mainTextArea.appendText(cat.getName() + " выходит в бой против босса!\nЕму противостоит босс " + dog.getName() + "!\n\n");
         fight(dog);
+    }
+
+    public static synchronized void saveGame() throws IOException {
+        SavedGame savedGame = new SavedGame(Dog.getNameCount(), Dog.getLastLevel(), cat, dog, winGame, allBossesBeaten);
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(SAVED_GAME_PATH));
+        out.writeObject(savedGame);
+        out.flush();
+        out.close();
+        controller.mainTextArea.appendText("Игра сохранена успешно!\n\n");
+    }
+
+    public static synchronized void loadGame() throws IOException, ClassNotFoundException {
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(SAVED_GAME_PATH));
+        SavedGame savedGame = (SavedGame) in.readObject();
+        in.close();
+        Dog.setNameCount(savedGame.dogNameCount);
+        Dog.setLastLevel(savedGame.dogLastLevel);
+        cat = savedGame.cat;
+        dog = savedGame.dog;
+        winGame = savedGame.winGame;
+        allBossesBeaten = savedGame.allBossesBeaten;
+        updateLeftPanel();
+        eraseRightPanel();
+        controller = Controller.controller;
+        controller.mainTextArea.setText("Ранее сохранённая игра успешно загружена!\n\n");
     }
 }
