@@ -42,6 +42,24 @@ public class Dog extends Animal implements Serializable {
         nameCount++;
     }
 
+    public Dog(String name, int level, int nameCount) {
+        this.level = level;
+        lastLevel = level;
+        this.setMaxHitPoints(500 + 50*(this.level));
+        this.setHitPoints(500 + 50*(this.level));
+        this.setPower(50 + 5*(this.level));
+        this.setDefense(50 + 5*(this.level));
+        this.name = name;
+        super.enemyMessage1 = name + " запинается и падает прямо на кошака!";
+        super.enemyMessage2 = name + " мощно кусает кошака!";
+        super.enemyMessage3 = name + " своим весом впечатывает кошака в стену!";
+        super.catMessage1 = " опрокидывает цветочный горшок на собакирена!";
+        super.catMessage2 = " прищемляет собакирену хвост дверью!";
+        super.catMessage3 = " обходит сзади и кусает собакирена за задницу!";
+        super.whatAnimal = "Dog";
+        Dog.nameCount = nameCount;
+    }
+
     public static void setLastLevel(int lastLevel) {
         Dog.lastLevel = lastLevel;
     }

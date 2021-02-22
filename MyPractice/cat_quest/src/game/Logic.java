@@ -386,7 +386,7 @@ public class Logic {
     }
 
     public static synchronized void saveGame() throws IOException {
-        SavedGame savedGame = new SavedGame(Dog.getNameCount(), Dog.getLastLevel(), cat, dog, winGame, allBossesBeaten);
+        SavedGame savedGame = new SavedGame(winGame, allBossesBeaten, cat.getName(), cat.getLevel(), cat.getFoodCount(), cat.getValCount(), cat.getExp(), cat.getMaxHitPoints(), cat.getHitPoints(), cat.getPower(), cat.getDefense(), dog.getName(), dog.getLevel(), Dog.getNameCount());
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(SAVED_GAME_PATH));
         out.writeObject(savedGame);
         out.flush();
@@ -395,18 +395,32 @@ public class Logic {
     }
 
     public static synchronized void loadGame() throws IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(SAVED_GAME_PATH));
-        SavedGame savedGame = (SavedGame) in.readObject();
-        in.close();
-        Dog.setNameCount(savedGame.dogNameCount);
-        Dog.setLastLevel(savedGame.dogLastLevel);
-        cat = savedGame.cat;
-        dog = savedGame.dog;
-        winGame = savedGame.winGame;
-        allBossesBeaten = savedGame.allBossesBeaten;
-        updateLeftPanel();
-        eraseRightPanel();
         controller = Controller.controller;
-        controller.mainTextArea.setText("Ранее сохранённая игра успешно загружена!\n\n");
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(SAVED_GAME_PATH));
+            SavedGame savedGame = (SavedGame) in.readObject();
+            startNewGame("tempName");
+            cat.setName(savedGame.getCatName());
+            cat.setLevel(savedGame.getCatLevel());
+            cat.setFoodCount(savedGame.getFoodCount());
+            cat.setValCount(savedGame.getValCount());
+            cat.setExp(savedGame.getExp());
+            cat.setMaxHitPoints(savedGame.getCatMaxHP());
+            cat.setHitPoints(savedGame.getCatHP());
+            cat.setPower(savedGame.getCatPower());
+            cat.setDefense(savedGame.getCatDefense());
+            dog.setName(savedGame.getDogName());
+            dog.setLevel(savedGame.getDogLevel());
+            Dog.setNameCount(savedGame.getNameCount());
+            winGame = savedGame.isWinGame();
+            allBossesBeaten = savedGame.isAllBossesBeaten();
+            in.close();
+            updateLeftPanel();
+            eraseRightPanel();
+            controller.mainTextArea.setText("Ранее сохранённая игра успешно загружена!\n\n");
+        }
+        catch (FileNotFoundException e) {
+            controller.mainTextArea.appendText("Сохранённой игры не обнаружено.\n\n");
+        }
     }
 }
