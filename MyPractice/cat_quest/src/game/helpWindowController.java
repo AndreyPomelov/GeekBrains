@@ -1,6 +1,5 @@
 package game;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
@@ -15,7 +14,7 @@ public class helpWindowController implements Initializable {
     public TextArea area;
 
     @FXML
-    public void buttonPressed(ActionEvent actionEvent) {
+    public void buttonPressed() {
         Stage stage = (Stage) area.getScene().getWindow();
         stage.close();
     }

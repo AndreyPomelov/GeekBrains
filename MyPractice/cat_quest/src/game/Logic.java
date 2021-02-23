@@ -10,7 +10,6 @@ public class Logic {
     private static final String SAVED_GAME_PATH = "save.ser";
 
     private static Controller controller;
-    private static StartWindowController startWindowController;
     public static Cat cat;
     public static Dog dog;
     public static Rat rat;
@@ -108,43 +107,28 @@ public class Logic {
     }
 
     public static synchronized void updateLeftPanel() {
-        Platform.runLater(() -> {
-            controller.leftPanelLabel.setText(" Статус:\n Здоровье: \t" + cat.getHitPoints() + " из " + cat.getMaxHitPoints() +
-                    "\n Сила: \t\t" + cat.getPower() +
-                    "\n Защита: \t\t" + cat.getDefense() +
-                    "\n Уровень: \t" + cat.getLevel() +
-                    "\n Еда: \t\t" + cat.getFoodCount() +
-                    "\n Валерьянка: \t" + cat.getValCount());
-        });
+        Platform.runLater(() -> controller.leftPanelLabel.setText(" Статус:\n Здоровье: \t" + cat.getHitPoints() + " из " + cat.getMaxHitPoints() +
+                "\n Сила: \t\t" + cat.getPower() +
+                "\n Защита: \t\t" + cat.getDefense() +
+                "\n Уровень: \t" + cat.getLevel() +
+                "\n Еда: \t\t" + cat.getFoodCount() +
+                "\n Валерьянка: \t" + cat.getValCount()));
     }
 
     public static synchronized void updateRightPanel() {
-        Platform.runLater(() -> {
-            controller.rightPanelLabel.setText(" Данные разведки:\n" +
-                    " Босс " + dog.getName() + "\n Уровень: " + dog.getLevel());
-        });
+        Platform.runLater(() -> controller.rightPanelLabel.setText(" Данные разведки:\n" +
+                " Босс " + dog.getName() + "\n Уровень: " + dog.getLevel()));
     }
 
     public static synchronized void eraseRightPanel() {
-        Platform.runLater(() -> {
-            controller.rightPanelLabel.setText(" Данные разведки:");
-        });
-    }
-
-    public static synchronized Controller getController() {
-        return controller;
+        Platform.runLater(() -> controller.rightPanelLabel.setText(" Данные разведки:"));
     }
 
     public static synchronized void setController(Controller controller) {
         Logic.controller = controller;
     }
 
-    public static synchronized StartWindowController getStartWindowController() {
-        return startWindowController;
-    }
-
-    public static synchronized void setStartWindowController(StartWindowController startWindowController) {
-        Logic.startWindowController = startWindowController;
+    public static synchronized void setStartWindowController() {
     }
 
     public static synchronized void steal() {
@@ -170,7 +154,6 @@ public class Logic {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                controller.unblockButtons();
             }
             else {
                 controller.mainTextArea.appendText("Колбаса охраняется боссом! " + cat.getName() + " отхватывает люлей!\n");
@@ -186,8 +169,8 @@ public class Logic {
                     }
                 }
                 updateLeftPanel();
-                controller.unblockButtons();
             }
+            controller.unblockButtons();
         }).start();
     }
 
@@ -271,7 +254,7 @@ public class Logic {
                 while (cat.getHitPoints() > 0 && enemy.getHitPoints() > 0) {
                     try {
                         Thread.sleep(1500);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     if (cat.getHitPoints() > 0) {
@@ -300,7 +283,7 @@ public class Logic {
                     }
                     try {
                         Thread.sleep(1500);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     if (enemy.getHitPoints() > 0) {
@@ -376,13 +359,21 @@ public class Logic {
     }
 
     public static synchronized void bossAttack() {
-        if (allBossesBeaten) {
-            controller.mainTextArea.appendText("Все боссы повержены!\n");
-            controller.unblockButtons();
-            return;
-        }
-        controller.mainTextArea.appendText(cat.getName() + " выходит в бой против босса!\nЕму противостоит босс " + dog.getName() + "!\n\n");
-        fight(dog);
+        new Thread(() -> {
+            if (allBossesBeaten) {
+                controller.mainTextArea.appendText("Все боссы повержены!\n");
+                controller.unblockButtons();
+                return;
+            }
+            controller.mainTextArea.appendText(cat.getName() + " выходит в бой против босса!\n\n");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            controller.mainTextArea.appendText("Ему противостоит босс " + dog.getName() + "!\n\n");
+            fight(dog);
+        }).start();
     }
 
     public static synchronized void saveGame() throws IOException {

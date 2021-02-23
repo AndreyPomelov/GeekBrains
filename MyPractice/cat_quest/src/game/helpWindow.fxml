@@ -1,16 +1,7 @@
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import java.net.URL?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
 <BorderPane fx:controller="game.helpWindowController"
             xmlns:fx="http://javafx.com/fxml"
             prefHeight="550.0" prefWidth="950.0">

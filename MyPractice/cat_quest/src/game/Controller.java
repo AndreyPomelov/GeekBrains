@@ -2,8 +2,6 @@ package game;
 
 import game.animals.Cat;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,7 +13,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -51,10 +48,9 @@ public class Controller implements Initializable, Serializable {
     public static Cat cat;
 
     @FXML
-    public synchronized void menuItemStartPressed(ActionEvent actionEvent) throws IOException {
+    public synchronized void menuItemStartPressed() throws IOException {
         controller = this;
         Logic.setController(this);
-        TextAppend.controller = this;
         GameOverWindowController.controller = this;
         Parent root = FXMLLoader.load(getClass().getResource("startWindow.fxml"));
         Scene scene = new Scene(root);
@@ -65,14 +61,14 @@ public class Controller implements Initializable, Serializable {
     }
 
     @FXML
-    public synchronized void menuItemExitPressed(ActionEvent actionEvent) throws IOException {
+    public synchronized void menuItemExitPressed() throws IOException {
         Logic.saveGame();
         Stage stage = (Stage) leftPanelLabel.getScene().getWindow();
         stage.close();
     }
 
     @FXML
-    public synchronized void buttonHunt(ActionEvent actionEvent) {
+    public synchronized void buttonHunt() {
         if (cat == null) return;
         blockButtons();
         mainTextArea.clear();
@@ -80,7 +76,7 @@ public class Controller implements Initializable, Serializable {
     }
 
     @FXML
-    public synchronized void buttonEat(ActionEvent actionEvent) {
+    public synchronized void buttonEat() {
         if (cat == null) return;
         blockButtons();
         mainTextArea.clear();
@@ -88,7 +84,7 @@ public class Controller implements Initializable, Serializable {
     }
 
     @FXML
-    public synchronized void buttonVal(ActionEvent actionEvent) {
+    public synchronized void buttonVal() {
         if (cat == null) return;
         blockButtons();
         mainTextArea.clear();
@@ -96,7 +92,7 @@ public class Controller implements Initializable, Serializable {
     }
 
     @FXML
-    public synchronized void buttonRecon(ActionEvent actionEvent) throws InterruptedException {
+    public synchronized void buttonRecon() {
         if (cat == null) return;
         blockButtons();
         mainTextArea.clear();
@@ -104,7 +100,7 @@ public class Controller implements Initializable, Serializable {
     }
 
     @FXML
-    public synchronized void buttonAttack(ActionEvent actionEvent) throws IOException {
+    public synchronized void buttonAttack() {
         if (cat == null) return;
         blockButtons();
         mainTextArea.clear();
@@ -112,7 +108,7 @@ public class Controller implements Initializable, Serializable {
     }
 
     @FXML
-    public synchronized void buttonSteal(ActionEvent actionEvent) {
+    public synchronized void buttonSteal() {
         if (cat == null) return;
         blockButtons();
         mainTextArea.clear();
@@ -142,11 +138,11 @@ public class Controller implements Initializable, Serializable {
     }
 
     @FXML
-    public synchronized void gameOver(boolean wingame) throws IOException {
+    public synchronized void gameOver(boolean winGame) throws IOException {
         Platform.runLater(() -> {
-            Parent root = null;
+            Parent root;
             try {
-                if (wingame) root = FXMLLoader.load(getClass().getResource("gameOverWindow.fxml"));
+                if (winGame) root = FXMLLoader.load(getClass().getResource("gameOverWindow.fxml"));
                 else root = FXMLLoader.load(getClass().getResource("badEnd.fxml"));
                 Scene scene = new Scene(root);
                 Stage stage = new Stage();
@@ -160,18 +156,18 @@ public class Controller implements Initializable, Serializable {
         });
     }
 
-    public void menuItemSavePressed(ActionEvent actionEvent) throws IOException {
+    public void menuItemSavePressed() throws IOException {
         if (cat == null) return;
         Logic.saveGame();
     }
 
-    public void menuItemLoadPressed(ActionEvent actionEvent) throws IOException, ClassNotFoundException {
+    public void menuItemLoadPressed() throws IOException, ClassNotFoundException {
         Logic.loadGame();
     }
 
-    public void menuItemHelpPressed(ActionEvent actionEvent) {
+    public void menuItemHelpPressed() {
         Platform.runLater(() -> {
-            Parent root = null;
+            Parent root;
             try {
                 root = FXMLLoader.load(getClass().getResource("helpWindow.fxml"));
                 Scene scene = new Scene(root);

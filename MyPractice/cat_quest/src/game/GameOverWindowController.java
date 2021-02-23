@@ -1,6 +1,5 @@
 package game;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
@@ -14,7 +13,7 @@ public class GameOverWindowController {
     public static Controller controller;
 
     @FXML
-    public void buttonPressed(ActionEvent actionEvent) {
+    public void buttonPressed() {
         Stage stage = (Stage) button.getScene().getWindow();
         controller.leftPanelLabel.setText(" Статус:");
         Logic.eraseRightPanel();
