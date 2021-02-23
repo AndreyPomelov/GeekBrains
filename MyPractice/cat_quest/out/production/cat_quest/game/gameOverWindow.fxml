@@ -10,7 +10,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="game.GameOverWindowController"
-            prefHeight="300.0" prefWidth="500.0">
+            prefHeight="400.0" prefWidth="500.0">
 
     <stylesheets>
         <URL value="@css/style.css"/>
@@ -24,6 +24,9 @@
             <Label text="победил боссов и заслуженно получил свой приз!" wrapText="true"/>
             <Label/>
             <Label text="Спасибо за игру!" wrapText="true"/>
+            <Label/>
+            <Label text="P.S. При создании данной игры " wrapText="true"/>
+            <Label text="ни один котик не пострадал!" wrapText="true"/>
             <Label/>
             <Label text="Классная игра получилась," wrapText="true"/>
             <Label text="не правда ли?" wrapText="true"/>

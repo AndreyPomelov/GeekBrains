@@ -386,6 +386,7 @@ public class Logic {
     }
 
     public static synchronized void saveGame() throws IOException {
+        if (cat == null) return;
         SavedGame savedGame = new SavedGame(winGame, allBossesBeaten, cat.getName(), cat.getLevel(), cat.getFoodCount(), cat.getValCount(), cat.getExp(), cat.getMaxHitPoints(), cat.getHitPoints(), cat.getPower(), cat.getDefense(), dog.getName(), dog.getLevel(), Dog.getNameCount());
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(SAVED_GAME_PATH));
         out.writeObject(savedGame);
