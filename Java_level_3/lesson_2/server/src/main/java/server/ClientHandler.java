@@ -32,6 +32,11 @@ public class ClientHandler {
                     //цикл аутентификации
                     while (true) {
                         String str = in.readUTF();
+
+                        // В цикле аутентификации нужна проверка на цензуру, например,
+                        // для того чтобы нельзя было зарегистрироваться с нецензурным ником.
+                        str = censorship(str);
+
                         if (str.startsWith("/")) {
                             if (str.equals(Command.END)) {
                                 System.out.println("client want to disconnected ");
@@ -78,6 +83,11 @@ public class ClientHandler {
                     //цикл работы
                     while (true) {
                         String str = in.readUTF();
+
+                        // Запускаем проверку на цензуру сразу же после получения сообщения сервером от клиента,
+                        // перед проверками на служебные сообщения, для того чтобы, например,
+                        // нельзя было сменить ник на нецензурный.
+                        str = censorship(str);
 
                         if (str.startsWith("/")) {
                             if (str.equals(Command.END)) {
@@ -134,6 +144,17 @@ public class ClientHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String censorship(String message) {
+        String[] arrayMsg = message.split("\\s");
+        message = "";
+        for (int i = 0; i < arrayMsg.length; i++) {
+            if (Censorship.map.get(arrayMsg[i]) != null)
+                arrayMsg[i] = Censorship.map.get(arrayMsg[i]);
+            message += arrayMsg[i] + " ";
+        }
+        return message.trim();
     }
 
     public void sendMsg(String msg) {
