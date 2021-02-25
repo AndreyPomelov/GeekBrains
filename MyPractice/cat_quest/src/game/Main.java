@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Main extends Application {
 
     @Override
@@ -14,6 +16,13 @@ public class Main extends Application {
         primaryStage.setTitle("Игра \"Котоквест\"");
         primaryStage.setScene(new Scene(root, 1024, 600));
         primaryStage.setResizable(false);
+        primaryStage.setOnCloseRequest(event -> {
+            try {
+                Logic.saveGame();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         primaryStage.show();
     }
 

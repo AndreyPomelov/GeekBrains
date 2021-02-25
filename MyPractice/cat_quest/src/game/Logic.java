@@ -3,19 +3,20 @@ package game;
 import game.animals.*;
 import javafx.application.Platform;
 
-import java.io.IOException;
+import java.io.*;
 
 public class Logic {
 
+    private static final String SAVED_GAME_PATH = "save.ser";
+
     private static Controller controller;
-    private static StartWindowController startWindowController;
     public static Cat cat;
     public static Dog dog;
     public static Rat rat;
     public static Mouse mouse;
     private static int chance;
     private static boolean winGame = false;
-    private static boolean allBossesBeaten = true;
+    private static boolean allBossesBeaten = false;
 
     public static synchronized void startNewGame(String catName) {
         controller.mainTextArea.setText("Ты управляешь своим кошаком.\n" +
@@ -23,6 +24,8 @@ public class Logic {
                 "Но колбаса охраняется пятью боссами-собакиренами.\n" +
                 "Прокачивай кошака на охоте, побеждай боссов, забирай колбасу.\n" +
                 "Удачи!\n\n");
+        winGame = false;
+        allBossesBeaten = false;
         cat = new Cat(500, 500, 50, 50,
                 catName, 1, 0, 0, 0);
         updateLeftPanel();
@@ -32,6 +35,11 @@ public class Logic {
     }
 
     public static synchronized void recon() {
+        if (allBossesBeaten) {
+            controller.mainTextArea.appendText("Все боссы повержены!\n");
+            controller.unblockButtons();
+            return;
+        }
         new Thread(() -> {
             if (cat == null) return;
             controller.mainTextArea.appendText(cat.getName() + " пытается провести разведку\n");
@@ -77,6 +85,12 @@ public class Logic {
                 cat.setPower(cat.getPower() - 5);
                 cat.setDefense(cat.getDefense() - 5);
             } else {
+                controller.blockButtons();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 controller.mainTextArea.appendText(cat.getName() + " немного отдыхает и восстанавливает силы...\n\n");
                 try {
                     Thread.sleep(5000);
@@ -84,6 +98,7 @@ public class Logic {
                     e.printStackTrace();
                 }
                 controller.mainTextArea.appendText("Отдых окончен! Силы восстановлены!\n\n");
+                controller.unblockButtons();
             }
             cat.setHitPoints(cat.getMaxHitPoints());
             cat.setExp(0);
@@ -92,43 +107,28 @@ public class Logic {
     }
 
     public static synchronized void updateLeftPanel() {
-        Platform.runLater(() -> {
-            controller.leftPanelLabel.setText(" Статус:\n Здоровье: \t" + cat.getHitPoints() + " из " + cat.getMaxHitPoints() +
-                    "\n Сила: \t\t" + cat.getPower() +
-                    "\n Защита: \t\t" + cat.getDefense() +
-                    "\n Уровень: \t" + cat.getLevel() +
-                    "\n Еда: \t\t" + cat.getFoodCount() +
-                    "\n Валерьянка: \t" + cat.getValCount());
-        });
+        Platform.runLater(() -> controller.leftPanelLabel.setText(" Статус:\n Здоровье: \t" + cat.getHitPoints() + " из " + cat.getMaxHitPoints() +
+                "\n Сила: \t\t" + cat.getPower() +
+                "\n Защита: \t\t" + cat.getDefense() +
+                "\n Уровень: \t" + cat.getLevel() +
+                "\n Еда: \t\t" + cat.getFoodCount() +
+                "\n Валерьянка: \t" + cat.getValCount()));
     }
 
     public static synchronized void updateRightPanel() {
-        Platform.runLater(() -> {
-            controller.rightPanelLabel.setText(" Данные разведки:\n" +
-                    " Босс " + dog.getName() + "\n Уровень: " + dog.getLevel());
-        });
+        Platform.runLater(() -> controller.rightPanelLabel.setText(" Данные разведки:\n" +
+                " Босс " + dog.getName() + "\n Уровень: " + dog.getLevel()));
     }
 
     public static synchronized void eraseRightPanel() {
-        Platform.runLater(() -> {
-            controller.rightPanelLabel.setText(" Данные разведки:");
-        });
-    }
-
-    public static synchronized Controller getController() {
-        return controller;
+        Platform.runLater(() -> controller.rightPanelLabel.setText(" Данные разведки:"));
     }
 
     public static synchronized void setController(Controller controller) {
         Logic.controller = controller;
     }
 
-    public static synchronized StartWindowController getStartWindowController() {
-        return startWindowController;
-    }
-
-    public static synchronized void setStartWindowController(StartWindowController startWindowController) {
-        Logic.startWindowController = startWindowController;
+    public static synchronized void setStartWindowController() {
     }
 
     public static synchronized void steal() {
@@ -142,13 +142,18 @@ public class Logic {
             if (allBossesBeaten) {
                 winGame = true;
                 controller.mainTextArea.appendText("Попытка успешна!!!\n\n");
-                cat = null;
                 try {
-                    controller.gameOver();
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                cat = null;
+                Controller.cat = null;
+                try {
+                    controller.gameOver(winGame);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                controller.unblockButtons();
             }
             else {
                 controller.mainTextArea.appendText("Колбаса охраняется боссом! " + cat.getName() + " отхватывает люлей!\n");
@@ -164,8 +169,8 @@ public class Logic {
                     }
                 }
                 updateLeftPanel();
-                controller.unblockButtons();
             }
+            controller.unblockButtons();
         }).start();
     }
 
@@ -249,7 +254,7 @@ public class Logic {
                 while (cat.getHitPoints() > 0 && enemy.getHitPoints() > 0) {
                     try {
                         Thread.sleep(1500);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     if (cat.getHitPoints() > 0) {
@@ -278,7 +283,7 @@ public class Logic {
                     }
                     try {
                         Thread.sleep(1500);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     if (enemy.getHitPoints() > 0) {
@@ -354,7 +359,60 @@ public class Logic {
     }
 
     public static synchronized void bossAttack() {
-        controller.mainTextArea.appendText(cat.getName() + " выходит в бой против босса!\nЕму противостоит босс " + dog.getName() + "!\n\n");
-        fight(dog);
+        new Thread(() -> {
+            if (allBossesBeaten) {
+                controller.mainTextArea.appendText("Все боссы повержены!\n");
+                controller.unblockButtons();
+                return;
+            }
+            controller.mainTextArea.appendText(cat.getName() + " выходит в бой против босса!\n\n");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            controller.mainTextArea.appendText("Ему противостоит босс " + dog.getName() + "!\n\n");
+            fight(dog);
+        }).start();
+    }
+
+    public static synchronized void saveGame() throws IOException {
+        if (cat == null) return;
+        SavedGame savedGame = new SavedGame(winGame, allBossesBeaten, cat.getName(), cat.getLevel(), cat.getFoodCount(), cat.getValCount(), cat.getExp(), cat.getMaxHitPoints(), cat.getHitPoints(), cat.getPower(), cat.getDefense(), dog.getName(), dog.getLevel(), Dog.getNameCount());
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(SAVED_GAME_PATH));
+        out.writeObject(savedGame);
+        out.flush();
+        out.close();
+        controller.mainTextArea.appendText("Игра сохранена успешно!\n\n");
+    }
+
+    public static synchronized void loadGame() throws IOException, ClassNotFoundException {
+        controller = Controller.controller;
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(SAVED_GAME_PATH));
+            SavedGame savedGame = (SavedGame) in.readObject();
+            startNewGame("tempName");
+            cat.setName(savedGame.getCatName());
+            cat.setLevel(savedGame.getCatLevel());
+            cat.setFoodCount(savedGame.getFoodCount());
+            cat.setValCount(savedGame.getValCount());
+            cat.setExp(savedGame.getExp());
+            cat.setMaxHitPoints(savedGame.getCatMaxHP());
+            cat.setHitPoints(savedGame.getCatHP());
+            cat.setPower(savedGame.getCatPower());
+            cat.setDefense(savedGame.getCatDefense());
+            dog.setName(savedGame.getDogName());
+            dog.setLevel(savedGame.getDogLevel());
+            Dog.setNameCount(savedGame.getNameCount());
+            winGame = savedGame.isWinGame();
+            allBossesBeaten = savedGame.isAllBossesBeaten();
+            in.close();
+            updateLeftPanel();
+            eraseRightPanel();
+            controller.mainTextArea.setText("Ранее сохранённая игра успешно загружена!\n\n");
+        }
+        catch (FileNotFoundException e) {
+            controller.mainTextArea.appendText("Сохранённой игры не обнаружено.\n\n");
+        }
     }
 }

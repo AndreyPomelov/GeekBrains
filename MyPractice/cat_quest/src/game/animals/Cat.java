@@ -2,7 +2,11 @@ package game.animals;
 
 import game.Controller;
 
-public class Cat extends Animal {
+import java.io.Serializable;
+
+public class Cat extends Animal implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private int level;

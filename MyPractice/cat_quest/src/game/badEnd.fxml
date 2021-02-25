@@ -5,8 +5,8 @@
 <?import java.net.URL?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="game.StartWindowController"
-            prefHeight="200.0" prefWidth="400.0">
+            fx:controller="game.GameOverWindowController"
+            prefHeight="300.0" prefWidth="500.0">
 
     <stylesheets>
         <URL value="@css/style.css"/>
@@ -14,10 +14,12 @@
 
     <center>
         <VBox alignment="CENTER">
-        <Label text="Назови своего кошака:"/>
-        <TextField fx:id="catName" onAction="#buttonGo"/>
-            <Label text="Внимание! Старт новой игры удалит"/>
-            <Label text="весь прогресс в текущей игре!"/>
+            <Label text="ПОРАЖЕНИЕ!!!" wrapText="true"/>
+            <Label/>
+            <Label text="Твой кошак не смог противостоять" wrapText="true"/>
+            <Label text="всем препятствиям и проиграл..." wrapText="true"/>
+            <Label/>
+            <Label text="Попробуй ещё раз!" wrapText="true"/>
         </VBox>
     </center>
 
@@ -31,7 +33,7 @@
 
     <bottom>
         <FlowPane alignment="CENTER" hgap="5" vgap="5" prefHeight="50">
-        <Button text="Поехали!" prefWidth="150" alignment="CENTER" onAction="#buttonGo"/>
+            <Button fx:id="button" text="Хорошо" onAction="#buttonPressed"/>
         </FlowPane>
     </bottom>
 
