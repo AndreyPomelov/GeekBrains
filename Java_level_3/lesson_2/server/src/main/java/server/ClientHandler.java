@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
 
-public class ClientHandler {
+public class ClientHandler implements Runnable {
     private Server server;
     private Socket socket;
 
@@ -171,5 +171,10 @@ public class ClientHandler {
 
     public String getLogin() {
         return login;
+    }
+
+    @Override
+    public void run() {
+
     }
 }
