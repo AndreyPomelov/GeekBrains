@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleAuthService implements AuthService {
+public class SimpleAuthService implements AuthService{
 
     public static Connection connection;
     public static Statement statement;

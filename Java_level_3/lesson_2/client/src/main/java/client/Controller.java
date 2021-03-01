@@ -219,7 +219,7 @@ public class Controller implements Initializable {
         }
         reader.close();
     }
-
+    
     public void sendMsg(ActionEvent actionEvent) {
         try {
             if (textField.getText().trim().length() > 0) {

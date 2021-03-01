@@ -1,15 +1,22 @@
 package game.animals;
 
-import game.Controller;
 import game.Logic;
 
-public class Dog extends Animal {
+import java.io.Serializable;
+
+public class Dog extends Animal implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private int level;
     private static final String[] names = {"Пумба", "Микки", "Чак", "Блейд", "Спайк"};
     private static int nameCount = 0;
     private static int lastLevel;
+
+    public static int getNameCount() {
+        return nameCount;
+    }
 
     public Dog() {
         Logic.eraseRightPanel();

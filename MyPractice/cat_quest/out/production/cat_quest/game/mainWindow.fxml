@@ -1,16 +1,7 @@
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import java.net.URL?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.VBox?>
+<?import java.net.URL?>
 <BorderPane fx:controller="game.Controller"
             xmlns:fx="http://javafx.com/fxml">
 
@@ -20,8 +11,11 @@
 
     <top>
         <MenuBar>
-            <Menu text="Меню">
-                <MenuItem text="Новая игра" fx:id="menuItemStart" onAction="#menuItemStartPressed"/>
+            <Menu fx:id="menu" text="Меню">
+                <MenuItem text="Новая игра" onAction="#menuItemStartPressed"/>
+                <MenuItem text="Сохранить игру" onAction="#menuItemSavePressed"/>
+                <MenuItem text="Загрузить игру" onAction="#menuItemLoadPressed"/>
+                <MenuItem text="Справка" onAction="#menuItemHelpPressed"/>
                 <MenuItem text="Выход" fx:id="menuItemExit" onAction="#menuItemExitPressed"/>
             </Menu>
         </MenuBar>

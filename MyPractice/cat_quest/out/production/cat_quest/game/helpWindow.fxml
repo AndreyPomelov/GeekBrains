@@ -1,0 +1,36 @@
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import java.net.URL?>
+<BorderPane fx:controller="game.helpWindowController"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="550.0" prefWidth="950.0">
+
+
+    <stylesheets>
+        <URL value="@css/style.css"/>
+    </stylesheets>
+
+    <top>
+        <Label prefHeight="10"/>
+    </top>
+
+    <left>
+        <Label prefWidth="100"/>
+    </left>
+
+    <center>
+        <TextArea fx:id="area" editable="false" wrapText="true" minWidth="200"/>
+    </center>
+
+    <right>
+        <Label prefWidth="100"/>
+    </right>
+
+    <bottom>
+        <FlowPane alignment="CENTER" hgap="5" vgap="5" prefHeight="50">
+            <Button text="Всё понял!" prefWidth="160" onAction="#buttonPressed"/>
+        </FlowPane>
+    </bottom>
+
+</BorderPane>
