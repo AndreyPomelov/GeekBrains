@@ -10,8 +10,21 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.*;
 
 public class Server {
+
+    private static final Logger logger = Logger.getLogger(Server.class.getName());
+    static {
+        try {
+            Handler handler = new FileHandler("log.log", true);
+            handler.setFormatter(new SimpleFormatter());
+            logger.addHandler(handler);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ServerSocket server;
     private Socket socket;
     private final int PORT = 8189;
@@ -25,6 +38,7 @@ public class Server {
         try {
             server = new ServerSocket(PORT);
             System.out.println("server started");
+            logger.log(Level.SEVERE, "Сервер запущен");
 
             ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
@@ -32,15 +46,18 @@ public class Server {
                 socket = server.accept();
                 System.out.println("client connected" + socket.getRemoteSocketAddress());
                 executorService.execute(new ClientHandler(this, socket));
+                logger.log(Level.INFO, "Клиент подключился" + socket.getRemoteSocketAddress());
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+            logger.log(Level.SEVERE, "Ошибка ввода-вывода", e);
         } finally {
             try {
                 server.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                logger.log(Level.SEVERE, "Ошибка ввода-вывода", e);
             }
             SimpleAuthService.closeDB();
         }
@@ -51,6 +68,7 @@ public class Server {
         for (ClientHandler c : clients) {
             c.sendMsg(message);
         }
+        logger.log(Level.INFO, "Клиент отправил сообщение: " + message);
     }
 
     public void privateMsg(ClientHandler sender, String receiver, String msg) {
@@ -58,6 +76,7 @@ public class Server {
         for (ClientHandler c : clients) {
             if(c.getNickname().equals(receiver)){
                 c.sendMsg(message);
+                logger.log(Level.INFO, "Клиент отправил приватное сообщение: " + message);
                 if(!c.equals(sender)){
                     sender.sendMsg(message);
                 }
