@@ -1,0 +1,23 @@
+
+=
+java:S1659L""Declare "str2" on a separate line.(¬¯ž³øÿÿÿÿ
+K
+java:S1191"5Use classes from the Java API instead of Sun classes.(¤œÐ
+A
+java:S3011>",This accessibility update should be removed.(®‚¶?
+N	java:S106V"9Replace this use of System.out or System.err by a logger.(ã—®ù
+G
+java:S3011<",This accessibility update should be removed.(’†ŽØùÿÿÿÿ
+B
+java:S3011C",This accessibility update should be removed.(Ó«§¯
+J
+java:S3740"/Provide the parametrized type for this generic.(¯µŸÿÿÿÿÿ
+E
+java:S3740&"/Provide the parametrized type for this generic.(«°ÃÏ
+N	java:S106"9Replace this use of System.out or System.err by a logger.(–´”è
+O
+java:S1611T"4Remove the parentheses around the "method" parameter(§»âüÿÿÿÿ
+J
+java:S3740/"/Provide the parametrized type for this generic.(š­û‡ýÿÿÿÿ
+`	java:S112:"FDefine and throw a dedicated exception instead of using a generic one.(¯åÕøÿÿÿÿ
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(‰÷Íî

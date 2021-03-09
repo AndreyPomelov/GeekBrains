@@ -1,0 +1,47 @@
+// http://www.quizful.net/category/java
+// https://ru.stackoverflow.com
+// https://stackoverflow.com
+// jira
+// https://geekbrains.ru/events/959 Java garbage collector
+// паттерны, jdbc, git, jira, cuncurent, java 8.
+// https://www.linkedin.com/feed/
+// языка SQL join, having
+// Английский язык
+// https://github.com/yaleksee/CoinDesk2019
+
+Questions:
+1 Hashmap +++++
+2 Interface +
+3 App Server vs Web Server. -
+4 Spring. What's it? Goal? Difference between @ и xml. +
+5 How client-server works? -
+6 Request/Session, why do we need it? +
+7 Session object +
+8 Difference Tomcat and Glassfish. -
+9 Which specification does Tomcat use? -
+10 HTTP Services? + httpS
+11 REST vs SOAP. ++++
+12 WSDL --
+13 JMS, MQ, integration technologies. ---
+14 Async and sync integration. ---
+15 Hibernate, + and -. ----
+16 What happened before Hibernate or JPA? ----
+17 Transaction. ++++
+18 Can one transaction be in another transaction?
+19 Session in Hibernate.
+20 Transaction types.
+21 How to finish transaction in Hibernate?
+22 JSP
+23 jQuery.
+24 DB: you have a slow query, how to improve query performance?
+25 MVC +++
+26 MVP
+27 DB Indexes.
+28 DB triggers.
+29 Patterns.
+Project info: mainly work in front. Technologies: java, jax-ws, jms, sometimes REST, sometimes js,
+jQuery.
+Требования:
+Знание основных методологий (Agile, DevOps и т.п.) разработки программного обеспечения
+Опыт командной разработки с использованием Confluence, Jira
+Опыт работы с: Spring, Hibernate, Gradle, JMS, JAX-WS, Git, Jenkins, UML, Jun
