@@ -1,7 +1,6 @@
 package company;
 
-
-import company.chapter4.pack.C4Q16;
+import company.chapter3.pack.*;
 
 public class Main {
 
@@ -24,7 +23,7 @@ public class Main {
 
         // TODO chapter3
 //        Chap3.stringMethod();
-//        ArraysMethods.methods();
+        ArraysMethods.methods();
 //        SplitTrim.main();
 //        C3Q01.question1();
 //        C3Q02.question2();
@@ -43,7 +42,7 @@ public class Main {
 
 //        Chap4.print();
 //        YetMoreInitializationOrder.example();
-        C4Q16.question16();
+//        C4Q16.question16();
 //        C4Q17.question17();
 //        C4Q26.question26();
 

@@ -1,7 +1,7 @@
 package company.chapter4.pack.c4q7.my.city;
 
 
-import com.company.chapter4.pack.c4q7.my.school.*;
+//import com.company.chapter4.pack.c4q7.my.school.*;
 
 /**
  * Created by Данилов on 25.07.2017.

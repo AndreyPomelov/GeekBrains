@@ -38,10 +38,10 @@ public class Chap3 {
         System.out.println(s.substring(7)); // empty
         System.out.println();
 
-        /*System.out.println(s.substring(3, 3)); // empty string
-        System.out.println(s.substring(3, 2)); // throws exception
-        System.out.println(s.substring(3, 8)); // throws exception
-*/
+        //System.out.println(s.substring(3, 3)); // empty string
+        //System.out.println(s.substring(3, 2)); // throws exception
+        //System.out.println(s.substring(3, 8)); // throws exception
+
         //toLoweCase() and toUpperCase длеает все буквы маленькими/большими.
 
         System.out.println(s.toUpperCase()); // ANIMALS
@@ -92,7 +92,7 @@ public class Chap3 {
 
         //StringBuilder
 
-        StringBuilder sb = new StringBuilder("Buider");
+        StringBuilder sb = new StringBuilder("Builder");
         sb.insert(0, "-");
         System.out.println(sb);
         System.out.println();
