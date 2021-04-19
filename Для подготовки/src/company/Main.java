@@ -1,6 +1,6 @@
 package company;
 
-import company.chapter3.pack.*;
+import company.chapter6.pack.*;
 
 public class Main {
 
@@ -23,7 +23,7 @@ public class Main {
 
         // TODO chapter3
 //        Chap3.stringMethod();
-        ArraysMethods.methods();
+//        ArraysMethods.methods();
 //        SplitTrim.main();
 //        C3Q01.question1();
 //        C3Q02.question2();
@@ -53,7 +53,7 @@ public class Main {
 
 
         // TODO chapter6
-//        C6Q04.question4();
+        C6Q04.question4();
 //        C6Q07.question7();
 //        C6Q08.question8();
 //        C6Q11.question11();

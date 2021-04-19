@@ -17,12 +17,12 @@ public class C3Q14 {
 //        System.out.println(puzzle2);
 //        System.out.println();
 //
-        System.out.println("Вариант C");
-        StringBuilder puzzle3 = new StringBuilder("Java");
-        puzzle3.append("vaJ$").delete(0, 3).deleteCharAt(puzzle3.length() - 1); //Вариант C
-        System.out.println(puzzle3);
-        System.out.println();
-
+//        System.out.println("Вариант C");
+//        StringBuilder puzzle3 = new StringBuilder("Java");
+//        puzzle3.append("vaJ$").delete(0, 3).deleteCharAt(puzzle3.length() - 1); //Вариант C
+//        System.out.println(puzzle3);
+//        System.out.println();
+//
 //        System.out.println("Вариант D");
 //        StringBuilder puzzle4 = new StringBuilder("Java");
 //        puzzle4.append("vaJ$").delete(0, 3).deleteCharAt(puzzle4.length()); //Вариант D

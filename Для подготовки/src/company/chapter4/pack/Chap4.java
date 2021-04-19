@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class Chap4 {
 
-    //public void walk1(int... nums) {    }
+    public void walk1(int... nums) {    }
 
-    //public void walk2(int start, int... nums) {    }
+    public void walk2(int start, int... nums) {    }
 
     //public void walk3(int... nums, int start) { } // DOES NOT COMPILE varargs должен быть последним
 
