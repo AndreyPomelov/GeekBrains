@@ -10,7 +10,7 @@
             fx:controller="ChatController">
 
    <children>
-      <ListView fx:id="listView" layoutX="14.0" layoutY="14.0" prefHeight="488.0" prefWidth="378.0" />
+      <ListView fx:id="listView" onMouseClicked="#upload" layoutX="14.0" layoutY="14.0" prefHeight="488.0" prefWidth="378.0" />
       <TextField fx:id="input" onAction="#send" layoutX="14.0" layoutY="502.0" prefHeight="48.0" prefWidth="378.0" />
    </children>
 
