@@ -9,10 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
@@ -23,12 +20,23 @@ import javafx.stage.WindowEvent;
 import java.io.*;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class Controller implements Initializable {
     @FXML
     public ListView<String> clientList;
+    public Label lab1;
+    public Label lab2;
+    public Label lab3;
+    public Label lab4;
+    public ListView<String> localDir;
+    public ListView<String> serverDir;
+    public Button buttonSend;
+    public Button buttonUpload;
+    public Button buttonDownload;
     @FXML
     private TextArea textArea;
     @FXML
@@ -62,14 +70,50 @@ public class Controller implements Initializable {
     private Stage regStage;
     private RegController regController;
 
+    private final String PATHNAME = "D:\\Андрей\\JavaRepository\\GeekBrains\\chat\\client\\files\\";
+
+    // Метод, отображающий в окне клиента список файлов, которые есть в папке.
+    public void showFileList() {
+        // Правильно ли делать такие вещи в потоке исполнения JavaFX?
+        Platform.runLater(() -> {
+            File dir = new File(PATHNAME);
+            for (File file : dir.listFiles()) {
+                localDir.getItems().add(file.getName());
+            }
+        });
+    }
+
+    // Не нравится этот метод.
+    // Просто захардкодил из-за отсутствия времени.
+    // По уму надо бы как-то это в цикле делать.
+    // Смысл метода в том, что после успешной авторизации клиента
+    // мы скрываем форму авторизации и отображаем основное окно приложения.
     public void setAuthenticated(boolean authenticated) {
         this.authenticated = authenticated;
-        messagePanel.setVisible(authenticated);
-        messagePanel.setManaged(authenticated);
         authPanel.setVisible(!authenticated);
         authPanel.setManaged(!authenticated);
         clientList.setVisible(authenticated);
         clientList.setManaged(authenticated);
+        lab1.setVisible(authenticated);
+        lab1.setManaged(authenticated);
+        lab2.setVisible(authenticated);
+        lab2.setManaged(authenticated);
+        lab3.setVisible(authenticated);
+        lab3.setManaged(authenticated);
+        lab4.setVisible(authenticated);
+        lab4.setManaged(authenticated);
+        localDir.setVisible(authenticated);
+        localDir.setManaged(authenticated);
+        serverDir.setVisible(authenticated);
+        serverDir.setManaged(authenticated);
+        textField.setVisible(authenticated);
+        textField.setManaged(authenticated);
+        buttonSend.setVisible(authenticated);
+        buttonSend.setManaged(authenticated);
+        buttonUpload.setVisible(authenticated);
+        buttonUpload.setManaged(authenticated);
+        buttonDownload.setVisible(authenticated);
+        buttonDownload.setManaged(authenticated);
 
         if (!authenticated) {
             nickname = "";
@@ -135,6 +179,9 @@ public class Controller implements Initializable {
                             textArea.appendText(str + "\n");
                         }
                     }
+
+                    // Отображаем список файлов в папке после успешной авторизации клиента.
+                    showFileList();
 
                     //цикл работы
                     while (true) {
@@ -299,5 +346,52 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Метод, закачивающий файл на сервер
+    public void upload(ActionEvent actionEvent) throws IOException {
+
+        // Запускаю закачку файла на сервер в новом потоке.
+        // Но не думаю, что это решение проблемы, т.к. поток вывода
+        // используется тот же самый, что и для отправки сообщений в чат.
+        // Клиент же может отправить сообщение, не дожидаясь закачки файла до конца.
+        // Подумать над этим.
+        // Изучить Netty, посмотреть, какие инструменты даст эта технология для решения вопроса.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Сначала посылаем служебную команду, чтобы сервер понял,
+                    // что мы вообще файл пытаемся отправить.
+                    out.writeUTF(Command.SEND_FILE);
+
+                    String filename = localDir.getSelectionModel().getSelectedItem();
+                    out.writeUTF(filename);
+
+                    long fileSize = Files.size(Paths.get(PATHNAME, filename));
+                    out.writeLong(fileSize);
+
+                    byte[] buffer = new byte[512];
+
+                    try (FileInputStream fis = new FileInputStream(PATHNAME + "\\" + filename)) {
+                        int read;
+                        while (true) {
+                            read = fis.read(buffer);
+                            if (read == -1) break;
+                            out.write(buffer, 0, read);
+                        }
+                        out.flush();
+                    }
+                }
+                catch (Exception e) {
+                    System.err.println("Error while uploading file");
+                }
+            }
+        }).start();
+    }
+
+    // Метод, скачивающий файл с сервера
+    public void download(ActionEvent actionEvent) {
+        // TODO Пока не реализован
     }
 }
