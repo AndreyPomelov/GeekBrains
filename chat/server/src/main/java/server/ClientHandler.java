@@ -16,7 +16,7 @@ public class ClientHandler implements Runnable {
 
     private String nickname;
     private String login;
-    private final String PATHNAME = "D:\\Андрей\\JavaRepository\\GeekBrains\\chat\\server\\files";
+    private String PATHNAME = "D:\\Андрей\\JavaRepository\\GeekBrains\\chat\\server\\files";
     private final int BUFFER_SIZE = 512;
 
     public ClientHandler(Server server, Socket socket) throws SQLException {
@@ -96,6 +96,11 @@ public class ClientHandler implements Runnable {
                             if (str.equals(Command.SEND_FILE)) {
                                 receiveFile();
                             }
+                            if (str.startsWith(Command.GO_TO_SERVER_DIR)) {
+                                String[] arr = str.split("\\s+", 2);
+                                String dirName = arr[1];
+                                checkOut(dirName);
+                            }
                             if (str.startsWith(Command.SHOW_FILE)) {
                                 String[] arr = str.split("\\s+", 2);
                                 String fileName = arr[1];
@@ -158,6 +163,20 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Метод, позволяющий перейти в другую папку
+    // TODO реализовать обратный переход
+    private void checkOut(String dirName) throws IOException {
+        File dir = new File(PATHNAME + "\\" + dirName);
+        // Проверка на существование папки
+        if (!dir.exists()) {
+            out.writeUTF("Указанная папка не существует");
+            return;
+        }
+        PATHNAME = PATHNAME + "\\" + dirName;
+        // После перехода в другую папку сразу же отображаем файлы, находящиеся в ней
+        showFilesList();
     }
 
     // Метод, показывающий содержимое файла
