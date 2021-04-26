@@ -2,10 +2,7 @@ package server;
 
 import commands.Command;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
@@ -99,6 +96,9 @@ public class ClientHandler implements Runnable {
                             if (str.equals(Command.SEND_FILE)) {
                                 receiveFile();
                             }
+                            if (str.equals(Command.SERVER_FILES_LIST)) {
+                                showFilesList();
+                            }
                             if (str.equals(Command.END)) {
                                 out.writeUTF(Command.END);
                                 break;
@@ -153,6 +153,18 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Метод, отправляющий клиенту список файлов из папки
+    private void showFilesList() throws IOException {
+        File dir = new File(PATHNAME);
+        // Сначала отправляем служебную команду, чтобы клиент понял, что дальше пойдёт список файлов
+        out.writeUTF(Command.SERVER_FILES_LIST);
+        for (File file : dir.listFiles()) {
+            out.writeUTF(file.getName());
+        }
+        // Служебной командой оповещаем клиента, что список файлов закончен
+        out.writeUTF(Command.END_OF_FILES_LIST);
     }
 
     private String censorship(String message) {

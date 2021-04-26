@@ -188,6 +188,9 @@ public class Controller implements Initializable {
                         String str = in.readUTF();
 
                         if (str.startsWith("/")) {
+                            if (str.equals(Command.SERVER_FILES_LIST)) {
+                                showServerFiles();
+                            }
                             if (str.equals(Command.END)) {
                                 setAuthenticated(false);
                                 break;
@@ -224,6 +227,21 @@ public class Controller implements Initializable {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Метод, принимающий от сервера список файлов и отображающий его в окне приложения
+    private void showServerFiles() throws IOException {
+        Platform.runLater(() -> {
+            serverDir.getItems().clear();
+        });
+        while (true) {
+            String fileName = in.readUTF();
+            // Если ловим служебную команду, что список файлов закончен, выходим из цикла
+            if (fileName.equals(Command.END_OF_FILES_LIST)) break;
+            Platform.runLater(() -> {
+                serverDir.getItems().add(fileName);
+            });
         }
     }
 
