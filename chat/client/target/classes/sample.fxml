@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import java.net.URL?>
+<GridPane xmlns="http://javafx.com/javafx/11.0.1"
+          xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="client.Controller"
+          alignment="CENTER">
+
+    <stylesheets>
+        <URL value="@/css/style.css"/>
+    </stylesheets>
+
+    <HBox fx:id="authPanel">
+        <TextField fx:id="loginField" promptText="login" HBox.hgrow="ALWAYS" />
+        <PasswordField fx:id="passwordField" promptText="password" HBox.hgrow="ALWAYS" onAction="#trytoAuth"/>
+        <Button text="auth" onAction="#trytoAuth" minWidth="100"/>
+        <Button text="reg" onAction="#clickRegBtn" minWidth="100"/>
+    </HBox>
+
+    <Label fx:id="lab1" text="   Chat Window" GridPane.columnIndex="0" GridPane.rowIndex="0" visible="false" managed="false"/>
+    <Label fx:id="lab2" text="   Users Online" GridPane.columnIndex="1" GridPane.rowIndex="0" visible="false" managed="false"/>
+    <Label fx:id="lab3" text="   Local Directory" GridPane.columnIndex="2" GridPane.rowIndex="0" visible="false" managed="false"/>
+    <Label fx:id="lab4" text="   Server Directory" GridPane.columnIndex="3" GridPane.rowIndex="0" visible="false" managed="false"/>
+
+    <TextArea fx:id="textArea" prefWidth="200" prefHeight="520" wrapText="true" editable="false" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <ListView fx:id="clientList" onMouseReleased="#clientListClicked" prefWidth="200" prefHeight="520" GridPane.columnIndex="1" GridPane.rowIndex="1" visible="false" managed="false"/>
+    <ListView fx:id="localDir" prefWidth="200" prefHeight="520" GridPane.columnIndex="2" GridPane.rowIndex="1" visible="false" managed="false"/>
+    <ListView fx:id="serverDir" prefWidth="200" prefHeight="520" GridPane.columnIndex="3" GridPane.rowIndex="1" visible="false" managed="false"/>
+
+    <TextField fx:id="textField" onAction="#sendMsg" promptText="Input Your Message" GridPane.columnIndex="0" GridPane.rowIndex="2" visible="false" managed="false"/>
+    <Button fx:id="buttonSend" text="Send" onAction="#sendMsg" GridPane.columnIndex="1" GridPane.rowIndex="2" visible="false" managed="false"/>
+    <Button fx:id="buttonUpload" text="Upload File" onAction="#upload" GridPane.columnIndex="2" GridPane.rowIndex="2" visible="false" managed="false"/>
+    <Button fx:id="buttonDownload" text="Download File" onAction="#download" GridPane.columnIndex="3" GridPane.rowIndex="2" visible="false" managed="false"/>
+
+</GridPane>
