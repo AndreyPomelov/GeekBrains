@@ -96,6 +96,16 @@ public class ClientHandler implements Runnable {
                             if (str.equals(Command.SEND_FILE)) {
                                 receiveFile();
                             }
+                            if (str.startsWith(Command.CREATE_DIRECTORY)) {
+                                String[] arr = str.split("\\s+", 2);
+                                String dirName = arr[1];
+                                createDir(dirName);
+                            }
+                            if (str.startsWith(Command.CREATE_FILE)) {
+                                String[] arr = str.split("\\s+", 2);
+                                String fileName = arr[1];
+                                createFile(fileName);
+                            }
                             if (str.startsWith(Command.GO_TO_SERVER_DIR)) {
                                 String[] arr = str.split("\\s+", 2);
                                 String dirName = arr[1];
@@ -163,6 +173,22 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Метод, создающий папку на сервере
+    private void createDir(String dirName) throws IOException {
+        File dir = new File(PATHNAME + "\\" + dirName);
+        if (!dir.exists()) dir.mkdir();
+        // После создания папки обновляем список файлов в окне приложения
+        showFilesList();
+    }
+
+    // Метод, создающий файл на сервере
+    private void createFile(String fileName) throws IOException {
+        File file = new File(PATHNAME + "\\" + fileName);
+        if (!file.exists()) file.createNewFile();
+        // После создания файла обновляем список файлов в окне приложения
+        showFilesList();
     }
 
     // Метод, позволяющий перейти в другую папку
