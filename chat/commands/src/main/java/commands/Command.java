@@ -10,4 +10,6 @@ public class Command {
     public static final String REG_OK = "/regok";
     public static final String REG_NO = "/regno";
     public static final String NICK_CHANGE = "/newnick";
+    // Добавил служебную команду для пересылки файла.
+    public static final String SEND_FILE = "/file";
 }

@@ -4,6 +4,7 @@ import commands.Command;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -18,6 +19,8 @@ public class ClientHandler implements Runnable {
 
     private String nickname;
     private String login;
+    private final String PATHNAME = "D:\\Андрей\\JavaRepository\\GeekBrains\\chat\\server\\files";
+    private final int BUFFER_SIZE = 512;
 
     public ClientHandler(Server server, Socket socket) throws SQLException {
         try {
@@ -90,6 +93,12 @@ public class ClientHandler implements Runnable {
                         str = censorship(str);
 
                         if (str.startsWith("/")) {
+                            // Если принимаем служебную команду, которая говорит серверу
+                            // о том, что дальше пойдёт файл, то запускаем соответствующий
+                            // метод, принимающий файл.
+                            if (str.equals(Command.SEND_FILE)) {
+                                receiveFile();
+                            }
                             if (str.equals(Command.END)) {
                                 out.writeUTF(Command.END);
                                 break;
@@ -176,5 +185,21 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
 
+    }
+
+    // Метод, принимающий файл и сохраняющий в папку на сервере
+    private void receiveFile() throws IOException {
+
+        String fileName = in.readUTF();
+        long fileSize = in.readLong();
+        String filePath = PATHNAME + "\\" + fileName;
+        byte[] buffer = new byte[BUFFER_SIZE];
+
+        try (FileOutputStream fos = new FileOutputStream(filePath)){
+            for (int i = 0; i < (fileSize + BUFFER_SIZE - 1) / BUFFER_SIZE; i++) {
+                int read = in.read(buffer);
+                fos.write(buffer, 0, read);
+            }
+        }
     }
 }
