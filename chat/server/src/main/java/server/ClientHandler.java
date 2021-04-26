@@ -96,6 +96,11 @@ public class ClientHandler implements Runnable {
                             if (str.equals(Command.SEND_FILE)) {
                                 receiveFile();
                             }
+                            if (str.startsWith(Command.SHOW_FILE)) {
+                                String[] arr = str.split("\\s+", 2);
+                                String fileName = arr[1];
+                                showFile(fileName);
+                            }
                             if (str.equals(Command.SERVER_FILES_LIST)) {
                                 showFilesList();
                             }
@@ -153,6 +158,36 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Метод, показывающий содержимое файла
+    private void showFile(String fileName) throws IOException {
+        File file = new File(PATHNAME + "\\" + fileName);
+        System.out.println(file.getName());
+
+        // Две проверки на существование файла и на то, что он текстовый
+        if (!file.exists()) {
+            out.writeUTF("Файл не существует");
+            return;
+        }
+
+        if (!fileName.endsWith(".txt")) {
+            out.writeUTF("Это не текстовый файл");
+            return;
+        }
+
+        out.writeUTF(Command.SHOW_FILE);
+        FileInputStream fis = new FileInputStream(file);
+        int read;
+        byte[] buffer = new byte[512];
+
+        while (true) {
+            read = fis.read(buffer);
+            if (read == -1) break;
+            out.write(buffer, 0, read);
+        }
+        out.write(-1);
+        out.flush();
     }
 
     // Метод, отправляющий клиенту список файлов из папки
