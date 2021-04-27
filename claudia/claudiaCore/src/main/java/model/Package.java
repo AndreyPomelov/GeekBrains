@@ -14,4 +14,12 @@ public class Package implements Serializable {
     public PackageType getPackageType() {
         return packageType;
     }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

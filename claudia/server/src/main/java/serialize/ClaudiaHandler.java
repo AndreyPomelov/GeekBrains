@@ -10,7 +10,8 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package aPackage) throws Exception {
         Package pack = aPackage;
         if (pack.getPackageType().equals(PackageType.REG)) {
-            
+            boolean regOK = DataBaseHandler.registration(pack.getLogin(), pack.getPassword());
+            // TODO вернуть ответ клиенту
         }
         channelHandlerContext.writeAndFlush(aPackage);
     }
