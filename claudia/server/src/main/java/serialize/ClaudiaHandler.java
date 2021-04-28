@@ -6,6 +6,10 @@ import model.Package;
 import model.PackageType;
 
 public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
+
+    // Переменная, определяющая, авторизовался ли пользователь.
+    boolean authorized = false;
+
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package aPackage) throws Exception {
         Package pack = aPackage;
