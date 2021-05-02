@@ -1,4 +1,4 @@
-package pipeline;
+package channel;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
 
+// Этот класс пока не используется
 @Slf4j
 public class StringToByteHandler extends ChannelOutboundHandlerAdapter {
 

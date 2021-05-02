@@ -2,6 +2,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
+// Этот класс пока не используется
 @Slf4j
 public class ClaudiaHandlerOld extends SimpleChannelInboundHandler<String> {
     @Override
