@@ -188,6 +188,12 @@ public class Controller implements Initializable {
                         String str = in.readUTF();
 
                         if (str.startsWith("/")) {
+                            if (str.equals(Command.SHOW_FILE)) {
+                                showFile();
+                            }
+                            if (str.equals(Command.SERVER_FILES_LIST)) {
+                                showServerFiles();
+                            }
                             if (str.equals(Command.END)) {
                                 setAuthenticated(false);
                                 break;
@@ -224,6 +230,34 @@ public class Controller implements Initializable {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Метод, выводящий на экран содержимое запрошенного файла
+    private void showFile() throws IOException {
+        StringBuilder s = new StringBuilder();
+        while (true) {
+            byte b = in.readByte();
+            if (b == -1) break;
+            s.append((char) b);
+        }
+        Platform.runLater(() -> {
+            textArea.appendText(s.toString() + "\n");
+        });
+    }
+
+    // Метод, принимающий от сервера список файлов и отображающий его в окне приложения
+    private void showServerFiles() throws IOException {
+        Platform.runLater(() -> {
+            serverDir.getItems().clear();
+        });
+        while (true) {
+            String fileName = in.readUTF();
+            // Если ловим служебную команду, что список файлов закончен, выходим из цикла
+            if (fileName.equals(Command.END_OF_FILES_LIST)) break;
+            Platform.runLater(() -> {
+                serverDir.getItems().add(fileName);
+            });
         }
     }
 
@@ -393,5 +427,12 @@ public class Controller implements Initializable {
     // Метод, скачивающий файл с сервера
     public void download(ActionEvent actionEvent) {
         // TODO Пока не реализован
+    }
+
+    // Метод, позволяющий посмотреть содержание файла простым кликом мыши,
+    // не набивая команду вручную
+    public void serverDirClicked(MouseEvent mouseEvent) throws IOException {
+        String fileName = serverDir.getSelectionModel().getSelectedItem();
+        out.writeUTF(Command.SHOW_FILE + " " + fileName);
     }
 }

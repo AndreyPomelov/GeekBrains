@@ -28,7 +28,7 @@
     <TextArea fx:id="textArea" prefWidth="200" prefHeight="520" wrapText="true" editable="false" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
     <ListView fx:id="clientList" onMouseReleased="#clientListClicked" prefWidth="200" prefHeight="520" GridPane.columnIndex="1" GridPane.rowIndex="1" visible="false" managed="false"/>
     <ListView fx:id="localDir" prefWidth="200" prefHeight="520" GridPane.columnIndex="2" GridPane.rowIndex="1" visible="false" managed="false"/>
-    <ListView fx:id="serverDir" prefWidth="200" prefHeight="520" GridPane.columnIndex="3" GridPane.rowIndex="1" visible="false" managed="false"/>
+    <ListView fx:id="serverDir" onMouseReleased="#serverDirClicked" prefWidth="200" prefHeight="520" GridPane.columnIndex="3" GridPane.rowIndex="1" visible="false" managed="false"/>
 
     <TextField fx:id="textField" onAction="#sendMsg" promptText="Input Your Message" GridPane.columnIndex="0" GridPane.rowIndex="2" visible="false" managed="false"/>
     <Button fx:id="buttonSend" text="Send" onAction="#sendMsg" GridPane.columnIndex="1" GridPane.rowIndex="2" visible="false" managed="false"/>

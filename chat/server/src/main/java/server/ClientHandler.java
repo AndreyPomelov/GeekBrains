@@ -2,10 +2,7 @@ package server;
 
 import commands.Command;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.sql.SQLException;
@@ -19,7 +16,7 @@ public class ClientHandler implements Runnable {
 
     private String nickname;
     private String login;
-    private final String PATHNAME = "D:\\Андрей\\JavaRepository\\GeekBrains\\chat\\server\\files";
+    private String PATHNAME = "D:\\Андрей\\JavaRepository\\GeekBrains\\chat\\server\\files";
     private final int BUFFER_SIZE = 512;
 
     public ClientHandler(Server server, Socket socket) throws SQLException {
@@ -99,6 +96,29 @@ public class ClientHandler implements Runnable {
                             if (str.equals(Command.SEND_FILE)) {
                                 receiveFile();
                             }
+                            if (str.startsWith(Command.CREATE_DIRECTORY)) {
+                                String[] arr = str.split("\\s+", 2);
+                                String dirName = arr[1];
+                                createDir(dirName);
+                            }
+                            if (str.startsWith(Command.CREATE_FILE)) {
+                                String[] arr = str.split("\\s+", 2);
+                                String fileName = arr[1];
+                                createFile(fileName);
+                            }
+                            if (str.startsWith(Command.GO_TO_SERVER_DIR)) {
+                                String[] arr = str.split("\\s+", 2);
+                                String dirName = arr[1];
+                                checkOut(dirName);
+                            }
+                            if (str.startsWith(Command.SHOW_FILE)) {
+                                String[] arr = str.split("\\s+", 2);
+                                String fileName = arr[1];
+                                showFile(fileName);
+                            }
+                            if (str.equals(Command.SERVER_FILES_LIST)) {
+                                showFilesList();
+                            }
                             if (str.equals(Command.END)) {
                                 out.writeUTF(Command.END);
                                 break;
@@ -153,6 +173,78 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    // Метод, создающий папку на сервере
+    private void createDir(String dirName) throws IOException {
+        File dir = new File(PATHNAME + "\\" + dirName);
+        if (!dir.exists()) dir.mkdir();
+        // После создания папки обновляем список файлов в окне приложения
+        showFilesList();
+    }
+
+    // Метод, создающий файл на сервере
+    private void createFile(String fileName) throws IOException {
+        File file = new File(PATHNAME + "\\" + fileName);
+        if (!file.exists()) file.createNewFile();
+        // После создания файла обновляем список файлов в окне приложения
+        showFilesList();
+    }
+
+    // Метод, позволяющий перейти в другую папку
+    // TODO реализовать обратный переход
+    private void checkOut(String dirName) throws IOException {
+        File dir = new File(PATHNAME + "\\" + dirName);
+        // Проверка на существование папки
+        if (!dir.exists()) {
+            out.writeUTF("Указанная папка не существует");
+            return;
+        }
+        PATHNAME = PATHNAME + "\\" + dirName;
+        // После перехода в другую папку сразу же отображаем файлы, находящиеся в ней
+        showFilesList();
+    }
+
+    // Метод, показывающий содержимое файла
+    private void showFile(String fileName) throws IOException {
+        File file = new File(PATHNAME + "\\" + fileName);
+        System.out.println(file.getName());
+
+        // Две проверки на существование файла и на то, что он текстовый
+        if (!file.exists()) {
+            out.writeUTF("Файл не существует");
+            return;
+        }
+
+        if (!fileName.endsWith(".txt")) {
+            out.writeUTF("Это не текстовый файл");
+            return;
+        }
+
+        out.writeUTF(Command.SHOW_FILE);
+        FileInputStream fis = new FileInputStream(file);
+        int read;
+        byte[] buffer = new byte[512];
+
+        while (true) {
+            read = fis.read(buffer);
+            if (read == -1) break;
+            out.write(buffer, 0, read);
+        }
+        out.write(-1);
+        out.flush();
+    }
+
+    // Метод, отправляющий клиенту список файлов из папки
+    private void showFilesList() throws IOException {
+        File dir = new File(PATHNAME);
+        // Сначала отправляем служебную команду, чтобы клиент понял, что дальше пойдёт список файлов
+        out.writeUTF(Command.SERVER_FILES_LIST);
+        for (File file : dir.listFiles()) {
+            out.writeUTF(file.getName());
+        }
+        // Служебной командой оповещаем клиента, что список файлов закончен
+        out.writeUTF(Command.END_OF_FILES_LIST);
     }
 
     private String censorship(String message) {
