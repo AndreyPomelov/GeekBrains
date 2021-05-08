@@ -7,6 +7,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 
 import java.net.InetSocketAddress;
 
@@ -25,7 +28,10 @@ public class Client {
                     .handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 protected void initChannel(SocketChannel channel) throws Exception {
-                    channel.pipeline().addLast(new Handler());
+                    channel.pipeline().addLast(
+                            new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                            new ObjectEncoder(),
+                            new Handler());
                 }
             });
 

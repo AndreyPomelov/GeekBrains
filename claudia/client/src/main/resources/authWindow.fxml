@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <!-- Макет окна авторизации -->
-<AnchorPane prefHeight="434.0" prefWidth="324.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AuthController">
+<AnchorPane prefHeight="434.0" prefWidth="324.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="AuthController">
    <children>
       <Label fx:id="authLabel" layoutX="33.0" layoutY="33.0" prefHeight="17.0" prefWidth="186.0" text="Please log in" />
       <TextField fx:id="authLogin" promptText="Enter login" layoutX="33.0" layoutY="64.0" />

@@ -15,8 +15,26 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
     String userName;
     // Корневая папка пользователя на сервере
     String userDir;
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        log.error("Exception caught in main connection handler");
+    }
+
     // Текущая папка, где находится пользователь
     String currentDir;
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        super.channelActive(ctx);
+        log.debug("Client connected");
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+        log.debug("Client disconnected");
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package aPackage) throws Exception {
