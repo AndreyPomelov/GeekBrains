@@ -119,7 +119,6 @@ public class Controller implements Initializable, Serializable {
     public synchronized void initialize(URL location, ResourceBundle resources) {
         mainTextArea.setText("Игра \"Котоквест\"" +
                 "\nРазработчик - Андрей Помелов" +
-                "\nДизайнер - Юлия Помелова" +
                 "\nEmail: k-udm@ya.ru" +
                 "\nг. Ижевск, 2021 г.\n\nДля начала игры выбери пункт \"Новая игра\" в Меню.\n\n");
         controller = this;

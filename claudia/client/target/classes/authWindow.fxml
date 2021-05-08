@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="434.0" prefWidth="324.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AuthController">
+   <children>
+      <Label fx:id="authLabel" layoutX="33.0" layoutY="33.0" prefHeight="17.0" prefWidth="186.0" text="Please log in" />
+      <TextField fx:id="authLogin" promptText="Enter login" layoutX="33.0" layoutY="64.0" />
+      <PasswordField fx:id="authPass" promptText="Enter password" layoutX="33.0" layoutY="103.0" />
+      <Label fx:id="regLabel" layoutX="33.0" layoutY="200.0" prefHeight="25.0" prefWidth="172.0" text="or register" />
+      <Button layoutX="33.0" layoutY="145.0" mnemonicParsing="false" text="Log in" onAction="#authorisation" />
+      <TextField fx:id="regLogin" promptText="Enter login" layoutX="33.0" layoutY="237.0" />
+      <PasswordField fx:id="regPass" promptText="Enter password" layoutX="33.0" layoutY="279.0" />
+      <PasswordField fx:id="regPassConfirm" promptText="Confirm password" layoutX="33.0" layoutY="324.0" />
+      <Button layoutX="35.0" layoutY="366.0" mnemonicParsing="false" text="Регистрация" onAction="#registration" />
+   </children>
+</AnchorPane>
