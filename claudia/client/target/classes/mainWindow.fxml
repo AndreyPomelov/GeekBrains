@@ -4,13 +4,18 @@
 <?import javafx.scene.layout.*?>
 
 <!-- Макет главного окна -->
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="MainController">
+
+<AnchorPane prefHeight="449.0" prefWidth="576.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainController">
    <children>
       <Label layoutX="14.0" layoutY="21.0" text="Local directory" />
-      <ListView fx:id="localFilesList" layoutX="14.0" layoutY="47.0" prefHeight="280.0" prefWidth="263.0" />
+      <ListView fx:id="localFilesList" layoutX="14.0" layoutY="47.0" prefHeight="325.0" prefWidth="263.0" />
       <Label layoutX="300.0" layoutY="21.0" text="Server directory" />
-      <ListView fx:id="serverFilesList" layoutX="300.0" layoutY="47.0" prefHeight="280.0" prefWidth="249.0" />
-      <Button layoutX="14.0" layoutY="338.0" mnemonicParsing="false" text="Upload file" onAction="#upload" />
-      <Button layoutX="300.0" layoutY="338.0" mnemonicParsing="false" text="Download file" onAction="#download" />
+      <ListView fx:id="serverFilesList" layoutX="300.0" layoutY="47.0" prefHeight="325.0" prefWidth="263.0" />
+      <Button layoutX="14.0" layoutY="378.0" mnemonicParsing="false" onAction="#upload" text="Upload file" />
+      <Button layoutX="300.0" layoutY="378.0" mnemonicParsing="false" onAction="#download" text="Download file" />
+      <TextField fx:id="localDirName" layoutX="14.0" layoutY="410.0" prefHeight="25.0" prefWidth="207.0" promptText="Enter new local directory name" />
+      <Button onAction="#createLocalDirectory" layoutX="225.0" layoutY="410.0" mnemonicParsing="false" text="Create" />
+      <Button onAction="#createRemoteDirectory" layoutX="512.0" layoutY="410.0" mnemonicParsing="false" text="Create" />
+      <TextField fx:id="remoteDirName" layoutX="300.0" layoutY="410.0" prefHeight="25.0" prefWidth="207.0" promptText="Enter new remote directory name" />
    </children>
 </AnchorPane>
