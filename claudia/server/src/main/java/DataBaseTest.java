@@ -1,5 +1,3 @@
-package serialize;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,9 +12,8 @@ public class DataBaseTest {
 
     public static void main(String[] args) throws SQLException {
         new DataBaseHandler();
-//        resultSet = statement.executeQuery("select * from users");
-//        System.out.println(resultSet.getString(2));
-        System.out.println(DataBaseHandler.getPassword("MyLog"));
+        String actualPass = DataBaseHandler.getPassword("qwe");
+        System.out.println(actualPass);
 
     }
 }

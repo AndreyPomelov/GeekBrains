@@ -9,10 +9,13 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import lombok.extern.slf4j.Slf4j;
-import serialize.ClaudiaHandler;
+import model.Package;
 
 @Slf4j
 public class Server {
+
+    private SocketChannel serverChannel;
+    private final ClaudiaHandler claudiaHandler = new ClaudiaHandler(this);
 
     public Server() {
 
@@ -26,10 +29,11 @@ public class Server {
                     childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel channel) throws Exception {
+                            serverChannel = channel;
                             channel.pipeline().addLast(
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
                                     new ObjectEncoder(),
-                                    new ClaudiaHandler()
+                                    claudiaHandler
                             );
                         }
                     });
@@ -43,5 +47,9 @@ public class Server {
             authGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
         }
+    }
+
+    public void write(Package pack) {
+        serverChannel.writeAndFlush(pack);
     }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="163.0" prefWidth="220.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AuthDeniedController">
+   <children>
+      <Label layoutX="54.0" layoutY="34.0" text="Authorization denied." wrapText="true" />
+      <Button fx:id="button" layoutX="88.0" layoutY="105.0" mnemonicParsing="false" onAction="#closeButton" text="Close" />
+      <Label layoutX="15.0" layoutY="69.0" text="Check your username and password." />
+   </children>
+</AnchorPane>

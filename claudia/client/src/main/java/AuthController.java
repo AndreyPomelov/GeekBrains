@@ -1,10 +1,12 @@
-import channel.Client;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
+import model.Package;
+import model.PackageType;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,6 +15,8 @@ import java.util.ResourceBundle;
 // Методы ещё не доделал, по факту никакого обмена информацией
 // с сервером ещё не происходит на данном этапе разработки.
 public class AuthController implements Initializable {
+
+    public static AuthController authController;
     public TextField authLogin;
     public PasswordField authPass;
     public TextField regLogin;
@@ -34,6 +38,11 @@ public class AuthController implements Initializable {
             authLabel.setText("Enter password");
             return;
         }
+
+        Package pack = new Package(PackageType.AUTH);
+        pack.setLogin(authLogin.getText());
+        pack.setPassword(authPass.getText());
+        client.write(pack);
     }
 
     public void registration(ActionEvent actionEvent) {
@@ -55,11 +64,21 @@ public class AuthController implements Initializable {
             return;
         }
 
-
+        Package pack = new Package(PackageType.REG);
+        pack.setLogin(regLogin.getText());
+        pack.setPassword(regPass.getText());
+        client.write(pack);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         client = new Client();
+        authController = this;
+    }
+
+    public static void closeWindow() {
+        Platform.runLater(() -> {
+            authController.authLabel.getScene().getWindow().hide();
+        });
     }
 }

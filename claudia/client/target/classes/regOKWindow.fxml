@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="163.0" prefWidth="308.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="RegOKController">
+    <children>
+        <Label layoutX="95.0" layoutY="34.0" text="Registration complete." wrapText="true" />
+        <Button fx:id="button" layoutX="132.0" layoutY="106.0" mnemonicParsing="false" onAction="#closeButton" text="Close" />
+        <Label layoutX="15.0" layoutY="69.0" text="Please log in with your new username and password." />
+    </children>
+</AnchorPane>
