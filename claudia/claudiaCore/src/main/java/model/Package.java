@@ -15,6 +15,14 @@ public class Package implements Serializable {
     private String fileName;
     private long fileSize;
 
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
     public List<String> getFilesList() {
         return filesList;
     }

@@ -50,6 +50,11 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package pack) throws Exception {
 
+        if (pack.getPackageType().equals(PackageType.MAKE_DIR)) {
+            File file = new File(currentDir + pack.getFileName());
+            file.mkdir();
+        }
+
         if (pack.getPackageType().equals(PackageType.SHOW_FILES)) {
             List<String> list = new ArrayList<>();
             File dir = new File(currentDir);
@@ -77,7 +82,7 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
             if (authorized) {
                 log.debug("Client authorised. Login: {}", pack.getLogin());
                 userName = pack.getLogin();
-                userDir = "server/userFiles/" + userName;
+                userDir = "server/userFiles/" + userName + "/";
                 currentDir = userDir;
                 File userRootDir = new File(userDir);
                 userRootDir.mkdir();

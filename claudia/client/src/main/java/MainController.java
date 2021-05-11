@@ -56,6 +56,10 @@ public class MainController implements Initializable {
     }
 
     public void createRemoteDirectory(ActionEvent actionEvent) {
-        // TODO
+        if (remoteDirName.getText().equals("")) return;
+        Package pack = new Package(PackageType.MAKE_DIR);
+        pack.setFileName(remoteDirName.getText());
+        authController.client.write(pack);
+        showFilesLists();
     }
 }
