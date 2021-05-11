@@ -3,6 +3,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import model.Package;
+import model.PackageType;
 
 import java.io.File;
 import java.net.URL;
@@ -30,19 +32,23 @@ public class MainController implements Initializable {
         File dir = new File(currentDir);
         Platform.runLater(() -> {
             for (File file : dir.listFiles()) {
-                localFilesList.getItems().add(file.getName());
+                if (file.isDirectory()) localFilesList.getItems().add(file.getName());
+            }
+            for (File file : dir.listFiles()) {
+                if (file.isFile()) localFilesList.getItems().add(file.getName());
             }
         });
+        authController.client.write(new Package(PackageType.SHOW_FILES));
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         authController = AuthController.authController;
         showFilesLists();
+        Handler.mainController = this;
     }
 
     public void createLocalDirectory(ActionEvent actionEvent) {
-        // TODO
         if (localDirName.getText().equals("")) return;
         File newDir = new File(currentDir + localDirName.getText());
         newDir.mkdir();

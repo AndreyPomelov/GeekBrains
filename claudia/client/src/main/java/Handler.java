@@ -8,13 +8,24 @@ import javafx.stage.Stage;
 import model.Package;
 import model.PackageType;
 
+import java.io.File;
 import java.io.IOException;
 
 // Это класс-хэндлер сетевого соединения
 public class Handler extends SimpleChannelInboundHandler<Package> {
 
+    protected static MainController mainController;
+
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package pack) throws Exception {
+
+        if (pack.getPackageType().equals(PackageType.SHOW_FILES)) {
+            Platform.runLater(() -> {
+                for (String s : pack.getFilesList()) {
+                    mainController.serverFilesList.getItems().add(s);
+                }
+            });
+        }
 
         if (pack.getPackageType().equals(PackageType.AUTH_OK)) {
             Parent parent = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));

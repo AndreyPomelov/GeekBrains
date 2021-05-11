@@ -6,6 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import model.Package;
 import model.PackageType;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 // Это основной хэндлер сервера
 @Slf4j
 public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
@@ -15,6 +19,8 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
     String userName;
     // Корневая папка пользователя на сервере
     String userDir;
+    // Текущая папка, где находится пользователь
+    String currentDir;
     private final Server server;
     DataBaseHandler dataBaseHandler;
 
@@ -28,9 +34,6 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
         log.error("Exception caught in main connection handler");
         cause.printStackTrace();
     }
-
-    // Текущая папка, где находится пользователь
-    String currentDir;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -46,6 +49,17 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package pack) throws Exception {
+
+        if (pack.getPackageType().equals(PackageType.SHOW_FILES)) {
+            List<String> list = new ArrayList<>();
+            File dir = new File(currentDir);
+            for (File file : dir.listFiles()) {
+                list.add(file.getName());
+            }
+            Package pack1 = new Package(PackageType.SHOW_FILES);
+            pack1.setFilesList(list);
+            server.write(pack1);
+        }
 
         if (pack.getPackageType().equals(PackageType.REG)) {
             if (pack.getLogin().equals("") || pack.getPassword().equals("")) return;
@@ -63,8 +77,10 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
             if (authorized) {
                 log.debug("Client authorised. Login: {}", pack.getLogin());
                 userName = pack.getLogin();
-                userDir = "claudia/server/userFiles/" + userName;
+                userDir = "server/userFiles/" + userName;
                 currentDir = userDir;
+                File userRootDir = new File(userDir);
+                userRootDir.mkdir();
                 server.write(new Package(PackageType.AUTH_OK));
             } else server.write(new Package(PackageType.AUTH_FAIL));
         }

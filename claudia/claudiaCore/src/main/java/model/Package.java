@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.List;
 
 // Это класс, описывающий пакеты, передающиеся
 // по каналу клиент-сервер
@@ -10,6 +11,17 @@ public class Package implements Serializable {
     private PackageType packageType;
     private String login;
     private String password;
+    private List<String> filesList;
+    private String fileName;
+    private long fileSize;
+
+    public List<String> getFilesList() {
+        return filesList;
+    }
+
+    public void setFilesList(List<String> filesList) {
+        this.filesList = filesList;
+    }
 
     public void setLogin(String login) {
         this.login = login;
@@ -22,9 +34,6 @@ public class Package implements Serializable {
     public Package(PackageType packageType) {
         this.packageType = packageType;
     }
-
-    private String fileName;
-    private long fileSize;
 
     public PackageType getPackageType() {
         return packageType;

@@ -24,7 +24,7 @@ public class AuthController implements Initializable {
     public PasswordField regPassConfirm;
     public Label regLabel;
     public Label authLabel;
-    private Client client;
+    protected Client client;
 
     public void authorisation(ActionEvent actionEvent) {
         if (authLogin.getText().length() == 0) {
