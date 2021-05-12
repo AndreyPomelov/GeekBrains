@@ -14,6 +14,23 @@ public class Package implements Serializable {
     private List<String> filesList;
     private String fileName;
     private long fileSize;
+    private byte[] buffer;
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public byte[] getBuffer() {
+        return buffer;
+    }
+
+    public void setBuffer(byte[] buffer) {
+        this.buffer = buffer;
+    }
 
     public void setFileName(String fileName) {
         this.fileName = fileName;

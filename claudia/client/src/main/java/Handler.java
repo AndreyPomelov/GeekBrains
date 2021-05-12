@@ -22,7 +22,14 @@ public class Handler extends SimpleChannelInboundHandler<Package> {
         if (pack.getPackageType().equals(PackageType.SHOW_FILES)) {
             Platform.runLater(() -> {
                 for (String s : pack.getFilesList()) {
-                    mainController.serverFilesList.getItems().add(s);
+                    if (s.endsWith("(folder)")) {
+                        mainController.serverFilesList.getItems().add(s);
+                    }
+                }
+                for (String s : pack.getFilesList()) {
+                    if (!s.endsWith("(folder)")) {
+                        mainController.serverFilesList.getItems().add(s);
+                    }
                 }
             });
         }
