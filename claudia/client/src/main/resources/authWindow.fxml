@@ -14,6 +14,6 @@
       <TextField fx:id="regLogin" promptText="Enter login" layoutX="33.0" layoutY="237.0" />
       <PasswordField fx:id="regPass" promptText="Enter password" layoutX="33.0" layoutY="279.0" />
       <PasswordField fx:id="regPassConfirm" promptText="Confirm password" layoutX="33.0" layoutY="324.0" />
-      <Button layoutX="35.0" layoutY="366.0" mnemonicParsing="false" text="Регистрация" onAction="#registration" />
+      <Button layoutX="35.0" layoutY="366.0" mnemonicParsing="false" text="Registration" onAction="#registration" />
    </children>
 </AnchorPane>
