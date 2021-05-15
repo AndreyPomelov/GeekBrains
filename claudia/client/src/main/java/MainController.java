@@ -24,7 +24,9 @@ public class MainController implements Initializable {
     public TextField localDirName;
     public TextField remoteDirName;
     private AuthController authController;
+    // Переменная с адресом корневого каталога
     private final String FILES_DIR = "client/files/";
+    // Переменная с адресом текущего каталога
     private String currentDir = "client/files/";
     private Socket socket;
     private DataOutputStream out;
@@ -33,12 +35,16 @@ public class MainController implements Initializable {
     private final int PORT = 8190;
     private final int BUFFER_SIZE = 512;
 
+    // Метод, отправляющий файл на сервер
     public void upload(ActionEvent actionEvent) throws IOException {
+        // Сначала создаём и отправляем информационный пакет на сервер
+        // с именем и размером файла
         Package pack = new Package(PackageType.FILE);
         pack.setFileName(localFilesList.getSelectionModel().getSelectedItem().toString());
         if (pack.getFileName().equals("") || pack.getFileName().endsWith("(folder)")) return;
         pack.setFileSize(Files.size(Paths.get(currentDir, pack.getFileName())));
         authController.client.write(pack);
+        // Отправляем сам файл
         new Thread(() -> {
             try {
                 socket = new Socket(IP_ADDRESS, PORT);
@@ -64,11 +70,15 @@ public class MainController implements Initializable {
         }).start();
     }
 
+    // Метод, принимающий файл с сервера
     public void download(ActionEvent actionEvent) {
+        // Сначала создаём пакет для сервера с информацией о том,
+        // какой именно файл мы хотим получить
         Package pack = new Package(PackageType.GET_FILE);
         pack.setFileName(serverFilesList.getSelectionModel().getSelectedItem().toString());
         if (pack.getFileName().equals("") || pack.getFileName().endsWith("(folder)")) return;
         authController.client.write(pack);
+        // Принимаем файл
         new Thread(() -> {
             try {
                 socket = new Socket(IP_ADDRESS, PORT);
@@ -92,6 +102,7 @@ public class MainController implements Initializable {
         }).start();
     }
 
+    // Метод, отображающий списки локальных и серверных файлов и папок
     public void showFilesLists() {
         localFilesList.getItems().clear();
         serverFilesList.getItems().clear();
@@ -115,6 +126,7 @@ public class MainController implements Initializable {
         Handler.mainController = this;
     }
 
+    // Метод, создающий локальную папку
     public void createLocalDirectory(ActionEvent actionEvent) {
         if (localDirName.getText().equals("")) return;
         File newDir = new File(currentDir + localDirName.getText());
@@ -123,6 +135,7 @@ public class MainController implements Initializable {
         localDirName.clear();
     }
 
+    // Метод, отправляющий на сервер запрос о создании папки на сервере
     public void createRemoteDirectory(ActionEvent actionEvent) {
         if (remoteDirName.getText().equals("")) return;
         Package pack = new Package(PackageType.MAKE_DIR);
@@ -132,7 +145,11 @@ public class MainController implements Initializable {
         remoteDirName.clear();
     }
 
+    // Метод, возвращающий родительскую папку заданной папки
     private String getParent(String path) {
+        // Проверка. Если текущая папка соответствует корневой
+        // папке, возвращаем адрес корневой папки
+        // (чтобы не было возможности уйти вверх по иерархии)
         if (path.equals(FILES_DIR)) {
             return FILES_DIR;
         } else {
@@ -143,6 +160,7 @@ public class MainController implements Initializable {
         }
     }
 
+    // Метод, открывающий выбранную локальную папку
     public void goToLocalDir(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() != 2) return;
         String longFolderName = localFilesList.getSelectionModel().getSelectedItem().toString();
@@ -156,6 +174,7 @@ public class MainController implements Initializable {
         showFilesLists();
     }
 
+    // Метод, открывающий выбранную папку на сервере
     public void goToRemoteDir(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() != 2) return;
         String longFolderName = serverFilesList.getSelectionModel().getSelectedItem().toString();

@@ -55,6 +55,7 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
         log.debug("Client disconnected");
     }
 
+    // Метод, отправляющий клиенту список файлов из текущей папки
     private void sendFilesList () {
         List<String> list = new ArrayList<>();
         File dir = new File(currentDir);
@@ -73,24 +74,27 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package pack) throws Exception {
 
+        // Создаём папку на сервере
         if (pack.getPackageType().equals(PackageType.MAKE_DIR) && authorized) {
             File file = new File(currentDir + pack.getFileName());
             file.mkdir();
         }
 
+        // Вызываем метод, отправляющий клиенту список файлов
         if (pack.getPackageType().equals(PackageType.SHOW_FILES) && authorized) {
             sendFilesList();
         }
 
+        // Регистрируем клиента и возвращаем ему ответ об успехе или неуспехе
         if (pack.getPackageType().equals(PackageType.REG)) {
             if (pack.getLogin().equals("") || pack.getPassword().equals("")) return;
             boolean regOK = DataBaseHandler.registration(pack.getLogin(), pack.getPassword());
             log.debug("Client registration: {}, login: {}", regOK, pack.getLogin());
-            // TODO вернуть ответ клиенту
             if (regOK) server.write(new Package(PackageType.REG_OK));
             else server.write(new Package(PackageType.REG_FAIL));
         }
 
+        // Авторизуем клиента и соощаем ему об успехе или неуспехе
         if (pack.getPackageType().equals(PackageType.AUTH)) {
             if (pack.getLogin().equals("") || pack.getPassword().equals("")) return;
             String actualPass = DataBaseHandler.getPassword(pack.getLogin());
@@ -106,6 +110,7 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
             } else server.write(new Package(PackageType.AUTH_FAIL));
         }
 
+        // Отправляем клиенту запрошенный файл
         if (pack.getPackageType().equals(PackageType.GET_FILE) && authorized) {
             new Thread(() -> {
                 try {
@@ -134,6 +139,7 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
             }).start();
         }
 
+        // Принимаем файл от клиента
         if (pack.getPackageType().equals(PackageType.FILE) && authorized) {
             new Thread(() -> {
                 try {
@@ -162,12 +168,17 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
             }).start();
         }
 
+        // Открываем для клиента выбранную папку
         if (pack.getPackageType().equals(PackageType.GO_TO_DIR) && authorized) {
             currentDir = currentDir + pack.getFileName() + "/";
             sendFilesList();
         }
 
+        // Открываем для клиента папку на уровень вверх по иерархии
         if (pack.getPackageType().equals(PackageType.TO_PARENT_DIR) && authorized) {
+            // Проверка, не находится ли пользователь уже в своей корневой папке.
+            // Если да, метод не сработает, т.е. клиента не пустит вверх по иерархии
+            // (чтобы не было возможности зайти в чужие папки).
             if (!currentDir.equals(userDir)) {
                 String s = currentDir.substring(0, currentDir.length() - 1);
                 int index = s.lastIndexOf("/");

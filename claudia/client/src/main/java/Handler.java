@@ -16,6 +16,7 @@ public class Handler extends SimpleChannelInboundHandler<Package> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package pack) throws Exception {
 
+        // Отображаем в окне список файлов, полученный от сервера
         if (pack.getPackageType().equals(PackageType.SHOW_FILES)) {
             Platform.runLater(() -> {
                 mainController.serverFilesList.getItems().clear();
@@ -33,6 +34,8 @@ public class Handler extends SimpleChannelInboundHandler<Package> {
             });
         }
 
+        // Получаем сообщение от сервера об успешной авторизации, закрываем
+        // окно авторизации и открываем основное окно
         if (pack.getPackageType().equals(PackageType.AUTH_OK)) {
             Parent parent = FXMLLoader.load(getClass().getResource("mainWindow.fxml"));
             Platform.runLater(() -> {
@@ -45,6 +48,7 @@ public class Handler extends SimpleChannelInboundHandler<Package> {
             AuthController.closeWindow();
         }
 
+        // Если авторизация неудачна, открываем информационное окно
         if (pack.getPackageType().equals(PackageType.AUTH_FAIL)) {
             Parent parent = FXMLLoader.load(getClass().getResource("authDeniedWindow.fxml"));
             Platform.runLater(() -> {
@@ -56,6 +60,7 @@ public class Handler extends SimpleChannelInboundHandler<Package> {
             });
         }
 
+        // Если регистрация успешна, открываем информационное окно
         if (pack.getPackageType().equals(PackageType.REG_OK)) {
             Parent parent = FXMLLoader.load(getClass().getResource("regOKWindow.fxml"));
             Platform.runLater(() -> {
@@ -67,6 +72,7 @@ public class Handler extends SimpleChannelInboundHandler<Package> {
             });
         }
 
+        // Если регистрация не удалась, открываем информационное окно
         if (pack.getPackageType().equals(PackageType.REG_FAIL)) {
             Parent parent = FXMLLoader.load(getClass().getResource("regFailWindow.fxml"));
             Platform.runLater(() -> {

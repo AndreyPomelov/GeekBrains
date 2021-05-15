@@ -12,8 +12,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 // Это класс-контроллер для окна регистрации и авторизации клиента
-// Методы ещё не доделал, по факту никакого обмена информацией
-// с сервером ещё не происходит на данном этапе разработки.
 public class AuthController implements Initializable {
 
     public static AuthController authController;
@@ -26,44 +24,53 @@ public class AuthController implements Initializable {
     public Label authLabel;
     protected Client client;
 
+    // Метод, отвечающий за авторизацию клиента на сервере
     public void authorisation(ActionEvent actionEvent) {
+        // Проверка, введён ли логин
         if (authLogin.getText().length() == 0) {
             authLabel.setTextFill(Color.RED);
             authLabel.setText("Enter login");
             return;
         }
 
+        // Проверка, введён ли пароль
         if (authPass.getText().length() == 0) {
             authLabel.setTextFill(Color.RED);
             authLabel.setText("Enter password");
             return;
         }
 
+        // Создаём пакет для авторизации и передаём его на сервер
         Package pack = new Package(PackageType.AUTH);
         pack.setLogin(authLogin.getText());
         pack.setPassword(authPass.getText());
         client.write(pack);
     }
 
+    // Метод, отвечающий за регистрацию клиента на сервере
     public void registration(ActionEvent actionEvent) {
+        // Проверка, введён ли логин
         if (regLogin.getText().length() == 0) {
             regLabel.setTextFill(Color.RED);
             regLabel.setText("Enter login");
             return;
         }
 
+        // Проверка, введён ли пароль
         if (regPass.getText().length() == 0) {
             regLabel.setTextFill(Color.RED);
             regLabel.setText("Enter password");
             return;
         }
 
+        // Проверка, совпадают ли пароли
         if (!regPass.getText().equals(regPassConfirm.getText())) {
             regLabel.setTextFill(Color.RED);
             regLabel.setText("Passwords don't match");
             return;
         }
 
+        // Создаём пакет для регистрации и отправляем его на сервер
         Package pack = new Package(PackageType.REG);
         pack.setLogin(regLogin.getText());
         pack.setPassword(regPass.getText());
@@ -76,6 +83,7 @@ public class AuthController implements Initializable {
         authController = this;
     }
 
+    // Метод, закрывающий окно авторизации
     public static void closeWindow() {
         Platform.runLater(() -> {
             authController.authLabel.getScene().getWindow().hide();

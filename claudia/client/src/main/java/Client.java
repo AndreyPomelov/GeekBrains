@@ -47,6 +47,7 @@ public class Client {
         }).start();
     }
 
+    // Метод, отправляющий пакеты на сервер
     public void write(Package pack) {
         clientChannel.writeAndFlush(pack);
     }

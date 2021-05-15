@@ -1,6 +1,7 @@
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 
+// Класс-контроллер всплывающего информационного окна
 public class RegFailController {
     public Button button;
 
