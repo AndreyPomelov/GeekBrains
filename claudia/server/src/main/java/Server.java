@@ -28,7 +28,7 @@ public class Server {
                     channel(NioServerSocketChannel.class).
                     childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel channel) throws Exception {
+                        protected void initChannel(SocketChannel channel) {
                             serverChannel = channel;
                             channel.pipeline().addLast(
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),

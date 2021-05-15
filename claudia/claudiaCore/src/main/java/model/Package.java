@@ -8,13 +8,12 @@ import java.util.List;
 public class Package implements Serializable {
 
     // Переменная, определяющая тип входящего пакета
-    private PackageType packageType;
+    private final PackageType packageType;
     private String login;
     private String password;
     private List<String> filesList;
     private String fileName;
     private long fileSize;
-    private byte[] buffer;
 
     public long getFileSize() {
         return fileSize;
@@ -22,14 +21,6 @@ public class Package implements Serializable {
 
     public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
-    }
-
-    public byte[] getBuffer() {
-        return buffer;
-    }
-
-    public void setBuffer(byte[] buffer) {
-        this.buffer = buffer;
     }
 
     public void setFileName(String fileName) {

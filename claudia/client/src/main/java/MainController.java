@@ -12,7 +12,6 @@ import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
@@ -20,8 +19,8 @@ import java.util.ResourceBundle;
 @Slf4j
 public class MainController implements Initializable {
 
-    public ListView localFilesList;
-    public ListView serverFilesList;
+    public ListView<String> localFilesList;
+    public ListView<String> serverFilesList;
     public TextField localDirName;
     public TextField remoteDirName;
     private AuthController authController;

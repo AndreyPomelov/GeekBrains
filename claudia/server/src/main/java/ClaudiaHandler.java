@@ -38,7 +38,7 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.error("Exception caught in main connection handler");
         cause.printStackTrace();
     }

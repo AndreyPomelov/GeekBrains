@@ -11,8 +11,6 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import lombok.extern.slf4j.Slf4j;
 import model.Package;
 
-import java.net.InetSocketAddress;
-
 // Это клиентская часть
 @Slf4j
 public class Client {
@@ -29,7 +27,7 @@ public class Client {
                         .channel(NioSocketChannel.class)
                         .handler(new ChannelInitializer<SocketChannel>() {
                             @Override
-                            protected void initChannel(SocketChannel channel) throws Exception {
+                            protected void initChannel(SocketChannel channel) {
                                 clientChannel = channel;
                                 channel.pipeline().addLast(
                                         new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
@@ -42,7 +40,7 @@ public class Client {
                 ChannelFuture future = bootstrap.connect("localhost", 8189).sync();
                 future.channel().closeFuture().sync();
             } catch (Exception e) {
-                log.error("Exception: {}", e);
+                log.error("Exception: ", e);
             } finally {
                 group.shutdownGracefully();
             }
