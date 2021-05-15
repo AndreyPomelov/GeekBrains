@@ -8,7 +8,6 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +55,21 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
         log.debug("Client disconnected");
     }
 
+    private void sendFilesList () {
+        List<String> list = new ArrayList<>();
+        File dir = new File(currentDir);
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                list.add(file.getName() + " (folder)");
+            } else {
+                list.add(file.getName());
+            }
+        }
+        Package pack1 = new Package(PackageType.SHOW_FILES);
+        pack1.setFilesList(list);
+        server.write(pack1);
+    }
+
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package pack) throws Exception {
 
@@ -65,18 +79,7 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
         }
 
         if (pack.getPackageType().equals(PackageType.SHOW_FILES) && authorized) {
-            List<String> list = new ArrayList<>();
-            File dir = new File(currentDir);
-            for (File file : dir.listFiles()) {
-                if (file.isDirectory()) {
-                    list.add(file.getName() + " (folder)");
-                } else {
-                    list.add(file.getName());
-                }
-            }
-            Package pack1 = new Package(PackageType.SHOW_FILES);
-            pack1.setFilesList(list);
-            server.write(pack1);
+            sendFilesList();
         }
 
         if (pack.getPackageType().equals(PackageType.REG)) {
@@ -160,8 +163,8 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
         }
 
         if (pack.getPackageType().equals(PackageType.GO_TO_DIR) && authorized) {
-            // TODO Перейти в папку
+            currentDir = currentDir + pack.getFileName() + "/";
+            sendFilesList();
         }
-
     }
 }

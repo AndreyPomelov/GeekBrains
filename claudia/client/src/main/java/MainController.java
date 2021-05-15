@@ -137,4 +137,14 @@ public class MainController implements Initializable {
         currentDir = currentDir + folderName + "/";
         showFilesLists();
     }
+
+    public void goToRemoteDir(MouseEvent mouseEvent) {
+        if (mouseEvent.getClickCount() != 2) return;
+        String longFolderName = serverFilesList.getSelectionModel().getSelectedItem().toString();
+        if(!longFolderName.endsWith("(folder)")) return;
+        int index = longFolderName.lastIndexOf("(");
+        Package pack = new Package(PackageType.GO_TO_DIR);
+        pack.setFileName(longFolderName.substring(0, index - 1));
+        authController.client.write(pack);
+    }
 }

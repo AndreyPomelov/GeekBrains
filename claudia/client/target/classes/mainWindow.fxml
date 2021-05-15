@@ -10,7 +10,7 @@
       <Label layoutX="14.0" layoutY="21.0" text="Local directory" />
       <ListView onMouseReleased="#goToLocalDir" fx:id="localFilesList" layoutX="14.0" layoutY="47.0" prefHeight="325.0" prefWidth="263.0" />
       <Label layoutX="300.0" layoutY="21.0" text="Server directory" />
-      <ListView fx:id="serverFilesList" layoutX="300.0" layoutY="47.0" prefHeight="325.0" prefWidth="263.0" />
+      <ListView onMouseReleased="#goToRemoteDir" fx:id="serverFilesList" layoutX="300.0" layoutY="47.0" prefHeight="325.0" prefWidth="263.0" />
       <Button layoutX="14.0" layoutY="378.0" mnemonicParsing="false" onAction="#upload" text="Upload file" />
       <Button layoutX="300.0" layoutY="378.0" mnemonicParsing="false" onAction="#download" text="Download file" />
       <TextField fx:id="localDirName" layoutX="14.0" layoutY="410.0" prefHeight="25.0" prefWidth="207.0" promptText="Enter new local directory name" />

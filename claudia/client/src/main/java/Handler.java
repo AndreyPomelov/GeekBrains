@@ -21,6 +21,7 @@ public class Handler extends SimpleChannelInboundHandler<Package> {
 
         if (pack.getPackageType().equals(PackageType.SHOW_FILES)) {
             Platform.runLater(() -> {
+                mainController.serverFilesList.getItems().clear();
                 for (String s : pack.getFilesList()) {
                     if (s.endsWith("(folder)")) {
                         mainController.serverFilesList.getItems().add(s);
