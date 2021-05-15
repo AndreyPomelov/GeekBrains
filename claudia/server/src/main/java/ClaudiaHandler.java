@@ -124,6 +124,7 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
                     }
                     out.close();
                     socket.close();
+                    fileServer.close();
                 } catch (Exception e) {
                     log.error("File sending error");
                 }

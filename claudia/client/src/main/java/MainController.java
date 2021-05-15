@@ -84,10 +84,10 @@ public class MainController implements Initializable {
             } catch (Exception e) {
                 log.error("File download error");
             }
+            Platform.runLater(() -> {
+                showFilesLists();
+            });
         }).start();
-        Platform.runLater(() -> {
-            showFilesLists();
-        });
     }
 
     public void showFilesLists() {
