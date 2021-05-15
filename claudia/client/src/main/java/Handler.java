@@ -8,9 +8,6 @@ import javafx.stage.Stage;
 import model.Package;
 import model.PackageType;
 
-import java.io.File;
-import java.io.IOException;
-
 // Это класс-хэндлер сетевого соединения
 public class Handler extends SimpleChannelInboundHandler<Package> {
 
@@ -22,6 +19,7 @@ public class Handler extends SimpleChannelInboundHandler<Package> {
         if (pack.getPackageType().equals(PackageType.SHOW_FILES)) {
             Platform.runLater(() -> {
                 mainController.serverFilesList.getItems().clear();
+                mainController.serverFilesList.getItems().add("..");
                 for (String s : pack.getFilesList()) {
                     if (s.endsWith("(folder)")) {
                         mainController.serverFilesList.getItems().add(s);

@@ -12,6 +12,7 @@ import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
@@ -24,6 +25,7 @@ public class MainController implements Initializable {
     public TextField localDirName;
     public TextField remoteDirName;
     private AuthController authController;
+    private final String FILES_DIR = "client/files/";
     private String currentDir = "client/files/";
     private Socket socket;
     private DataOutputStream out;
@@ -96,6 +98,7 @@ public class MainController implements Initializable {
         serverFilesList.getItems().clear();
         File dir = new File(currentDir);
         Platform.runLater(() -> {
+            localFilesList.getItems().add("..");
             for (File file : dir.listFiles()) {
                 if (file.isDirectory()) localFilesList.getItems().add(file.getName() + " (folder)");
             }
@@ -128,20 +131,34 @@ public class MainController implements Initializable {
         showFilesLists();
     }
 
+    private String getParent(String path) {
+        if (path.equals(FILES_DIR)) {
+            return FILES_DIR;
+        } else {
+            String s = path.substring(0, path.length() - 1);
+            int index = s.lastIndexOf("/");
+            String result = s.substring(0, index) + "/";
+            return result;
+        }
+    }
+
     public void goToLocalDir(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() != 2) return;
         String longFolderName = localFilesList.getSelectionModel().getSelectedItem().toString();
-        if(!longFolderName.endsWith("(folder)")) return;
-        int index = longFolderName.lastIndexOf("(");
-        String folderName = longFolderName.substring(0, index - 1);
-        currentDir = currentDir + folderName + "/";
+        if (longFolderName.endsWith("(folder)")) {
+            int index = longFolderName.lastIndexOf("(");
+            String folderName = longFolderName.substring(0, index - 1);
+            currentDir = currentDir + folderName + "/";
+        } else if (longFolderName.equals("..")) {
+            currentDir = getParent(currentDir);
+        } else return;
         showFilesLists();
     }
 
     public void goToRemoteDir(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() != 2) return;
         String longFolderName = serverFilesList.getSelectionModel().getSelectedItem().toString();
-        if(!longFolderName.endsWith("(folder)")) return;
+        if (!longFolderName.endsWith("(folder)") && !longFolderName.equals("..")) return;
         int index = longFolderName.lastIndexOf("(");
         Package pack = new Package(PackageType.GO_TO_DIR);
         pack.setFileName(longFolderName.substring(0, index - 1));
