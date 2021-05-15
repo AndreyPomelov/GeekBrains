@@ -3,6 +3,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 import model.Package;
 import model.PackageType;
@@ -124,6 +125,16 @@ public class MainController implements Initializable {
         Package pack = new Package(PackageType.MAKE_DIR);
         pack.setFileName(remoteDirName.getText());
         authController.client.write(pack);
+        showFilesLists();
+    }
+
+    public void goToLocalDir(MouseEvent mouseEvent) {
+        if (mouseEvent.getClickCount() != 2) return;
+        String longFolderName = localFilesList.getSelectionModel().getSelectedItem().toString();
+        if(!longFolderName.endsWith("(folder)")) return;
+        int index = longFolderName.lastIndexOf("(");
+        String folderName = longFolderName.substring(0, index - 1);
+        currentDir = currentDir + folderName + "/";
         showFilesLists();
     }
 }
