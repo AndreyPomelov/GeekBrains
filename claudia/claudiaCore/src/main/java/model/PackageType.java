@@ -4,5 +4,5 @@ package model;
 // пересылаемые по каналу клиент-сервер (будет пополняться).
 public enum PackageType {
 
-    REG, REG_OK, REG_FAIL, AUTH, AUTH_OK, AUTH_FAIL, FILE, GET_FILE, GO_TO_DIR, SHOW_FILES, MAKE_DIR
+    REG, REG_OK, REG_FAIL, AUTH, AUTH_OK, AUTH_FAIL, FILE, GET_FILE, GO_TO_DIR, TO_PARENT_DIR, SHOW_FILES, MAKE_DIR
 }

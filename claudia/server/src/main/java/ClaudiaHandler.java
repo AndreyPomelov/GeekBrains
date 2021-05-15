@@ -166,5 +166,14 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
             currentDir = currentDir + pack.getFileName() + "/";
             sendFilesList();
         }
+
+        if (pack.getPackageType().equals(PackageType.TO_PARENT_DIR) && authorized) {
+            if (!currentDir.equals(userDir)) {
+                String s = currentDir.substring(0, currentDir.length() - 1);
+                int index = s.lastIndexOf("/");
+                currentDir = s.substring(0, index) + "/";
+            }
+            sendFilesList();
+        }
     }
 }
