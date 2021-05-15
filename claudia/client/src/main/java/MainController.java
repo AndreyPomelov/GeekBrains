@@ -121,6 +121,7 @@ public class MainController implements Initializable {
         File newDir = new File(currentDir + localDirName.getText());
         newDir.mkdir();
         showFilesLists();
+        localDirName.clear();
     }
 
     public void createRemoteDirectory(ActionEvent actionEvent) {
@@ -129,6 +130,7 @@ public class MainController implements Initializable {
         pack.setFileName(remoteDirName.getText());
         authController.client.write(pack);
         showFilesLists();
+        remoteDirName.clear();
     }
 
     private String getParent(String path) {
