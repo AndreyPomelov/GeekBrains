@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import model.Package;
 import model.PackageType;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.nio.file.Files;
@@ -29,8 +26,10 @@ public class MainController implements Initializable {
     private String currentDir = "client/files/";
     private Socket socket;
     private DataOutputStream out;
+    private DataInputStream in;
     private final String IP_ADDRESS = "localhost";
     private final int PORT = 8190;
+    private final int BUFFER_SIZE = 512;
 
     public void upload(ActionEvent actionEvent) throws IOException {
         Package pack = new Package(PackageType.FILE);
@@ -42,7 +41,7 @@ public class MainController implements Initializable {
             try {
                 socket = new Socket(IP_ADDRESS, PORT);
                 out = new DataOutputStream(socket.getOutputStream());
-                byte[] buffer = new byte[512];
+                byte[] buffer = new byte[BUFFER_SIZE];
                 try (FileInputStream fis = new FileInputStream(currentDir + pack.getFileName())) {
                     int read;
                     while (true) {
@@ -64,6 +63,31 @@ public class MainController implements Initializable {
     }
 
     public void download(ActionEvent actionEvent) {
+        Package pack = new Package(PackageType.GET_FILE);
+        pack.setFileName(serverFilesList.getSelectionModel().getSelectedItem().toString());
+        if (pack.getFileName().equals("") || pack.getFileName().endsWith("(folder)")) return;
+        authController.client.write(pack);
+        new Thread(() -> {
+            try {
+                socket = new Socket(IP_ADDRESS, PORT);
+                in = new DataInputStream(socket.getInputStream());
+                long fileSize = in.readLong();
+                byte[] buffer = new byte[BUFFER_SIZE];
+                try (FileOutputStream fos = new FileOutputStream(currentDir + pack.getFileName())) {
+                    for (int i = 0; i < (fileSize + BUFFER_SIZE - 1) / BUFFER_SIZE; i++) {
+                        int read = in.read(buffer);
+                        fos.write(buffer, 0, read);
+                    }
+                }
+                in.close();
+                socket.close();
+            } catch (Exception e) {
+                log.error("File download error");
+            }
+        }).start();
+        Platform.runLater(() -> {
+            showFilesLists();
+        });
     }
 
     public void showFilesLists() {

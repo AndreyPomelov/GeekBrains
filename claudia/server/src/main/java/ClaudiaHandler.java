@@ -4,12 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import model.Package;
 import model.PackageType;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +31,7 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
     private Socket socket;
     private ServerSocket fileServer;
     private final int BUFFER_SIZE = 512;
+    private final int PORT = 8190;
 
     public ClaudiaHandler(Server server) {
         this.server = server;
@@ -58,12 +59,12 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Package pack) throws Exception {
 
-        if (pack.getPackageType().equals(PackageType.MAKE_DIR)) {
+        if (pack.getPackageType().equals(PackageType.MAKE_DIR) && authorized) {
             File file = new File(currentDir + pack.getFileName());
             file.mkdir();
         }
 
-        if (pack.getPackageType().equals(PackageType.SHOW_FILES)) {
+        if (pack.getPackageType().equals(PackageType.SHOW_FILES) && authorized) {
             List<String> list = new ArrayList<>();
             File dir = new File(currentDir);
             for (File file : dir.listFiles()) {
@@ -102,33 +103,62 @@ public class ClaudiaHandler extends SimpleChannelInboundHandler<Package> {
             } else server.write(new Package(PackageType.AUTH_FAIL));
         }
 
-        if (pack.getPackageType().equals(PackageType.FILE_PART)) {
-
-        }
-
-        if (pack.getPackageType().equals(PackageType.FILE)) {
-            if (pack.getFileName().equals("")) return;
-            File file = new File(currentDir + pack.getFileName());
-            file.delete();
-            file.createNewFile();
-            fileServer = new ServerSocket(8190);
-            socket = fileServer.accept();
-            in = new DataInputStream(socket.getInputStream());
-            byte[] buffer = new byte[BUFFER_SIZE];
-            try (FileOutputStream fos = new FileOutputStream(currentDir + pack.getFileName())) {
-                for (int i = 0; i < (pack.getFileSize() + BUFFER_SIZE - 1) / BUFFER_SIZE; i++) {
-                    int read = in.read(buffer);
-                    fos.write(buffer, 0, read);
+        if (pack.getPackageType().equals(PackageType.GET_FILE) && authorized) {
+            new Thread(() -> {
+                try {
+                    if (pack.getFileName().equals("")) return;
+                    File file = new File(currentDir + pack.getFileName());
+                    fileServer = new ServerSocket(PORT);
+                    socket = fileServer.accept();
+                    out = new DataOutputStream(socket.getOutputStream());
+                    out.writeLong(Files.size(Paths.get(currentDir + pack.getFileName())));
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    try (FileInputStream fis = new FileInputStream(file)){
+                        int read;
+                        while (true) {
+                            read = fis.read(buffer);
+                            if (read == -1) break;
+                            out.write(buffer, 0, read);
+                        }
+                        out.flush();
+                    }
+                    out.close();
+                    socket.close();
+                } catch (Exception e) {
+                    log.error("File sending error");
                 }
-            } catch (Exception e) {
-                log.error("File writing error");
-            }
-            in.close();
-            socket.close();
-            fileServer.close();
+            }).start();
         }
 
-        if (pack.getPackageType().equals(PackageType.GO_TO_DIR)) {
+        if (pack.getPackageType().equals(PackageType.FILE) && authorized) {
+            new Thread(() -> {
+                try {
+                    if (pack.getFileName().equals("")) return;
+                    File file = new File(currentDir + pack.getFileName());
+                    file.delete();
+                    file.createNewFile();
+                    fileServer = new ServerSocket(PORT);
+                    socket = fileServer.accept();
+                    in = new DataInputStream(socket.getInputStream());
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    try (FileOutputStream fos = new FileOutputStream(currentDir + pack.getFileName())) {
+                        for (int i = 0; i < (pack.getFileSize() + BUFFER_SIZE - 1) / BUFFER_SIZE; i++) {
+                            int read = in.read(buffer);
+                            fos.write(buffer, 0, read);
+                        }
+                    } catch (Exception e) {
+                        log.error("File writing error");
+                    }
+                    in.close();
+                    socket.close();
+                    fileServer.close();
+                } catch (Exception e) {
+                    log.error("File writing error");
+                }
+            }).start();
+        }
+
+        if (pack.getPackageType().equals(PackageType.GO_TO_DIR) && authorized) {
             // TODO Перейти в папку
         }
 
