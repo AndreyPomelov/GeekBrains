@@ -15,7 +15,6 @@ import model.Package;
 public class Server {
 
     private SocketChannel serverChannel;
-    private final ClaudiaHandler claudiaHandler = new ClaudiaHandler(this);
 
     public Server() {
 
@@ -33,7 +32,7 @@ public class Server {
                             channel.pipeline().addLast(
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
                                     new ObjectEncoder(),
-                                    claudiaHandler
+                                    new ClaudiaHandler(Server.this)
                             );
                         }
                     });
