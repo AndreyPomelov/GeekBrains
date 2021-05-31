@@ -1,13 +1,0 @@
-
-i
-java:S3008"NRename this field "A$B" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ãì”Áüÿÿÿÿ
-f
-java:S3008"PRename this field "_bool" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ªŠÔ½
-l
-java:S3008	"QRename this field "Public" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(òÁ¤’ûÿÿÿÿ
-U
-java:S1118":Add a private constructor to hide the implicit public one.(­ ×«øÿÿÿÿ
-S	java:S106"9Replace this use of System.out or System.err by a logger.(êÇûçıÿÿÿÿ
-S	java:S106"9Replace this use of System.out or System.err by a logger.(»ùçæùÿÿÿÿ
-N	java:S106"9Replace this use of System.out or System.err by a logger.(“™ƒ
-S	java:S106"9Replace this use of System.out or System.err by a logger.(µÏ…èùÿÿÿÿ

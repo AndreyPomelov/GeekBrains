@@ -1,12 +1,0 @@
-
-?
-java:S1125	")Remove the literal "false" boolean value.(ÏĞô
-6
-java:S3626"Remove this redundant jump.(·ñÖöÿÿÿÿÿ
-V	java:S125"<This block of commented-out lines of code should be removed.(¨¶äíúÿÿÿÿ
-K
-java:S1751"5Remove this "break" statement or make it conditional.(ù‡¥°
-S
-java:S1197"8Move the array designator from the variable to the type.(¡şÏÖøÿÿÿÿ
-B
-java:S1264	",Replace this "for" loop with a "while" loop.(ÏĞô

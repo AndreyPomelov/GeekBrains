@@ -1,13 +1,0 @@
-
-N	java:S106"9Replace this use of System.out or System.err by a logger.(ıìç
-C
-java:S1172"(Remove this unused method parameter "f".(‡³¿£üÿÿÿÿ
-C
-java:S1172"(Remove this unused method parameter "i".(ÃÖ¨Úùÿÿÿÿ
-S	java:S106	"9Replace this use of System.out or System.err by a logger.(›´÷—ıÿÿÿÿ
-S
-java:S1197"8Move the array designator from the variable to the type.(¡şÏÖøÿÿÿÿ
-V	java:S125"<This block of commented-out lines of code should be removed.(›ÔĞØüÿÿÿÿ
-S	java:S106"9Replace this use of System.out or System.err by a logger.(˜¨—ßüÿÿÿÿ
-C
-java:S1172"(Remove this unused method parameter "o".(ĞÎùùÿÿÿÿ

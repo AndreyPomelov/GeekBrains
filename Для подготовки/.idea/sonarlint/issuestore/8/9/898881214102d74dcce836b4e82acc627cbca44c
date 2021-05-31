@@ -1,15 +1,0 @@
-
-J
-java:S3740-"/Provide the parametrized type for this generic.(¬ò››øÿÿÿÿ
-q
-java:S2159"VRemove this call to "equals"; comparisons between unrelated types always return false.(†³€ûÿÿÿÿÿ
-t
-java:S2293"YReplace the type specification in this constructor call with the diamond operator ("<>").(½ØÛÃÿÿÿÿÿ
-N	java:S106'"9Replace this use of System.out or System.err by a logger.(†¬Æ”
-E
-java:S3740"/Provide the parametrized type for this generic.(íÎÉŠ
-I
-java:S1481-".Remove this unused "arrayList" local variable.(¬ò››øÿÿÿÿ
-N	java:S106"9Replace this use of System.out or System.err by a logger.(±åÚ„
-
-java:S1319"kThe type of the "map" object should be an interface such as "Map" rather than the implementation "HashMap".(íÎÉŠ
