@@ -74,7 +74,6 @@ public class Controller implements Initializable {
 
     // Метод, отображающий в окне клиента список файлов, которые есть в папке.
     public void showFileList() {
-        // Правильно ли делать такие вещи в потоке исполнения JavaFX?
         Platform.runLater(() -> {
             File dir = new File(PATHNAME);
             for (File file : dir.listFiles()) {
@@ -385,12 +384,6 @@ public class Controller implements Initializable {
     // Метод, закачивающий файл на сервер
     public void upload(ActionEvent actionEvent) throws IOException {
 
-        // Запускаю закачку файла на сервер в новом потоке.
-        // Но не думаю, что это решение проблемы, т.к. поток вывода
-        // используется тот же самый, что и для отправки сообщений в чат.
-        // Клиент же может отправить сообщение, не дожидаясь закачки файла до конца.
-        // Подумать над этим.
-        // Изучить Netty, посмотреть, какие инструменты даст эта технология для решения вопроса.
         new Thread(new Runnable() {
             @Override
             public void run() {

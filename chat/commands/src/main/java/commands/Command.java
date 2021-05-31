@@ -10,9 +10,7 @@ public class Command {
     public static final String REG_OK = "/regok";
     public static final String REG_NO = "/regno";
     public static final String NICK_CHANGE = "/newnick";
-    // Добавил служебную команду для пересылки файла.
     public static final String SEND_FILE = "/file";
-    // Дополнительные команды для управления файлами на сервере:
     public static final String SERVER_FILES_LIST = "/ls";
     public static final String END_OF_FILES_LIST = "/ls_end";
     public static final String SHOW_FILE = "/cat";
